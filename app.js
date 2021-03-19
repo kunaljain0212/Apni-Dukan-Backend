@@ -15,11 +15,16 @@ const paymentRoutes = require("./routes/payment");
 
 //DB connection
 mongoose
-  .connect(process.env.DATABASE, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-  })
+  .connect(
+    process.env.ENVIRONMENT === "localhost"
+      ? process.env.DATABASE_DOCKER
+      : process.env.DATABASE,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+    }
+  )
   .then(() => {
     console.log("DB CONNECTED");
   });
