@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "npm run compile && node dist/app.js",
+    "start": "node dist/app.js",
     "dev": "nodemon server/app.js --exec babel-node",
     "compile": "babel server --out-dir dist --source-maps inline --copy-files",
     "lint": "eslint .",
