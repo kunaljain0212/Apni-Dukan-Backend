@@ -1,8 +1,7 @@
 const Product = require("../models/product");
 const formidable = require("formidable");
-const _ = require("lodash");
+// const _ = require("lodash");
 const fs = require("fs");
-const product = require("../models/product");
 
 exports.getProductById = (req, res, next, id) => {
   Product.findById(id)
@@ -82,7 +81,9 @@ exports.updateProduct = (req, res) => {
     }
 
     let product = req.product;
-    product = _.extend(product, fields);
+    // product = _.extend(product, fields);
+    product = Object.assign(product, fields);
+    console.log(product);
 
     if (file.photo) {
       if (file.photo.size > 3000000) {

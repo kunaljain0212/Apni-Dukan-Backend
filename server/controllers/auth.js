@@ -1,7 +1,7 @@
-const User = require("../models/user");
-const { check, validationResult } = require("express-validator");
-var jwt = require("jsonwebtoken");
-var expressJwt = require("express-jwt");
+import User from "../models/user";
+import { check, validationResult } from "express-validator";
+import jwt from "jsonwebtoken";
+import expressJwt from "express-jwt";
 
 exports.signup = (req, res) => {
   // console.log("we entered");
@@ -16,7 +16,8 @@ exports.signup = (req, res) => {
   user.save((err, user) => {
     if (err) {
       return res.status(400).json({
-        error: "NOT able to save the user in database. Potential reason could be - Email already exists",
+        error:
+          "NOT able to save the user in database. Potential reason could be - Email already exists",
       });
     }
     res.json({
@@ -89,7 +90,7 @@ exports.isSignedin = expressJwt({
 
 //custom middlewares
 exports.isAuthenticated = (req, res, next) => {
-  let check = (req.profile && req.auth && (req.auth._id == req.profile._id))
+  let check = req.profile && req.auth && req.auth._id == req.profile._id;
   // console.log(req.auth._id.toString() == req.profile._id.toString());
   // console.log(req.auth._id);
   // console.log(req.profile._id);

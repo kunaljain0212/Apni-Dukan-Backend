@@ -30,11 +30,19 @@ mongoose
   });
 
 //Middlewares
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
 //My Routes
+
+app.get("/", (req, res) => {
+  res
+    .status(200)
+    .json({
+      message: `Server is up and running on port ${process.env.PORT || 8000}`,
+    });
+});
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
