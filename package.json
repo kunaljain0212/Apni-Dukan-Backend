@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node dist/app.js",
     "dev": "nodemon server/app.js --exec babel-node",
-    "compile": "babel server --out-dir dist --source-maps inline --copy-files"
+    "compile": "babel server --out-dir dist --source-maps inline --copy-files",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "keywords": [],
   "author": "",
@@ -16,7 +18,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.6.0",
     "express": "^4.17.1",
-    "express-jwt": "^5.3.1",
+    "express-jwt": "5.3.1",
     "express-validator": "^6.11.1",
     "formidable": "^1.2.1",
     "jsonwebtoken": "^8.5.1",
@@ -27,8 +29,20 @@
   "devDependencies": {
     "@babel/cli": "^7.14.3",
     "@babel/core": "^7.14.3",
+    "@babel/eslint-parser": "^7.14.4",
     "@babel/node": "^7.14.2",
     "@babel/preset-env": "^7.14.4",
-    "nodemon": "^2.0.7"
+    "eslint": "^7.27.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.8.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@babel/register": "^7.8.3",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.3.0"
   }
 }

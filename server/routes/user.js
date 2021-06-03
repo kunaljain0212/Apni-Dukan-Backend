@@ -1,13 +1,24 @@
-var express = require("express");
-var router = express.Router();
+const express = require('express');
 
-const { getUserById, getUser ,updateUser, userPurchaseList} = require("../controllers/user");
-const { isSignedin, isAuthenticated } = require("../controllers/auth");
+const router = express.Router();
 
-router.param("userId", getUserById);
+const {
+  getUserById,
+  getUser,
+  updateUser,
+  userPurchaseList,
+} = require('../controllers/user');
+const { isSignedin, isAuthenticated } = require('../controllers/auth');
 
-router.get("/user/:userId", isSignedin, isAuthenticated, getUser);
-router.put("/user/:userId", isSignedin, isAuthenticated, updateUser);
-router.get("/orders/user/:userId", isSignedin, isAuthenticated, userPurchaseList);
+router.param('userId', getUserById);
+
+router.get('/user/:userId', isSignedin, isAuthenticated, getUser);
+router.put('/user/:userId', isSignedin, isAuthenticated, updateUser);
+router.get(
+  '/orders/user/:userId',
+  isSignedin,
+  isAuthenticated,
+  userPurchaseList
+);
 
 module.exports = router;

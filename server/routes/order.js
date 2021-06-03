@@ -1,25 +1,26 @@
-const express = require("express");
+import express from 'express';
+
 const router = express.Router();
 
-const { isSignedin, isAuthenticated, isAdmin } = require("../controllers/auth");
-const { getUserById, pushOrderInPurchaseList } = require("../controllers/user");
-const { updateInventory } = require("../controllers/product");
+const { isSignedin, isAuthenticated, isAdmin } = require('../controllers/auth');
+const { getUserById, pushOrderInPurchaseList } = require('../controllers/user');
+const { updateInventory } = require('../controllers/product');
 
 const {
   getOrderById,
   createOrder,
   getAllOrders,
   getOrderStatus,
-  updateOrderStatus
-} = require("../controllers/order");
+  updateOrderStatus,
+} = require('../controllers/order');
 
-//param routes
-router.param("userId", getUserById);
-router.param("orderId", getOrderById);
+// param routes
+router.param('userId', getUserById);
+router.param('orderId', getOrderById);
 
-//create order route
+// create order route
 router.post(
-  "/order/create/:userId",
+  '/order/create/:userId',
   isSignedin,
   isAuthenticated,
   pushOrderInPurchaseList,
@@ -28,7 +29,7 @@ router.post(
 );
 
 router.get(
-  "/orders/all/:userId",
+  '/orders/all/:userId',
   isSignedin,
   isAuthenticated,
   isAdmin,
@@ -36,7 +37,7 @@ router.get(
 );
 
 router.get(
-  "/order/status/:userId",
+  '/order/status/:userId',
   isSignedin,
   isAuthenticated,
   isAdmin,
@@ -44,7 +45,7 @@ router.get(
 );
 
 router.put(
-  "/order/:orderId/status/:userId",
+  '/order/:orderId/status/:userId',
   isSignedin,
   isAuthenticated,
   isAdmin,

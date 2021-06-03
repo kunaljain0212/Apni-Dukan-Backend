@@ -1,11 +1,11 @@
-const User = require("../models/user");
-const Order = require("../models/order");
+import User from '../models/user';
+import Order from '../models/order';
 
-exports.getUserById = (req, res, next, id) => {
+export const getUserById = (req, res, next, id) => {
   User.findById(id).exec((error, user) => {
     if (error || !user) {
       res.status(400).json({
-        error: "USER NOT FOUND",
+        error: 'USER NOT FOUND',
       });
     }
     req.profile = user;
@@ -13,8 +13,8 @@ exports.getUserById = (req, res, next, id) => {
   });
 };
 
-exports.getUser = (req, res) => {
-  //TODO password needs to be hiddden
+export const getUser = (req, res) => {
+  // TODO password needs to be hiddden
   req.profile.encry_password = undefined;
   req.profile.salt = undefined;
   req.profile.createdAt = undefined;
@@ -22,7 +22,7 @@ exports.getUser = (req, res) => {
   res.json(req.profile);
 };
 
-exports.updateUser = (req, res) => {
+export const updateUser = (req, res) => {
   User.findByIdAndUpdate(
     { _id: req.profile._id },
     { $set: req.body },
@@ -30,7 +30,7 @@ exports.updateUser = (req, res) => {
     (error, user) => {
       if (error) {
         res.status(400).json({
-          error: "You are not authorized to update this information",
+          error: 'You are not authorized to update this information',
         });
       }
       user.encry_password = undefined;
@@ -42,21 +42,21 @@ exports.updateUser = (req, res) => {
   );
 };
 
-exports.userPurchaseList = (req, res) => {
+export const userPurchaseList = (req, res) => {
   Order.find({ user: req.profile._id })
-    .populate("user", "_id name")
+    .populate('user', '_id name')
     .exec((error, order) => {
       if (error) {
         res.status(404).json({
-          error: "NO ORDER IN THIS ACCOUNT",
+          error: 'NO ORDER IN THIS ACCOUNT',
         });
       }
       res.json(order);
     });
 };
 
-exports.pushOrderInPurchaseList = (req, res, next) => {
-  let purchases = [];
+export const pushOrderInPurchaseList = (req, res, next) => {
+  const purchases = [];
   req.body.order.products.forEach((product) => {
     purchases.push({
       _id: product._id,
@@ -69,15 +69,15 @@ exports.pushOrderInPurchaseList = (req, res, next) => {
     });
   });
 
-  //store this in DB
+  // store this in DB
   User.findOneAndUpdate(
     { _id: req.profile._id },
-    { $push: { purchases: purchases } },
+    { $push: { purchases } },
     { new: true },
     (error, purchases) => {
       if (error) {
         return res.status(400).json({
-          erroror: "Unable to save purchase list",
+          erroror: 'Unable to save purchase list',
         });
       }
       next();

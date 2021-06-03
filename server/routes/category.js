@@ -1,4 +1,5 @@
-const express = require("express");
+import express from 'express';
+
 const router = express.Router();
 
 const {
@@ -8,40 +9,40 @@ const {
   getAllCategories,
   updateCategory,
   removeCategory,
-} = require("../controllers/category");
+} = require('../controllers/category');
 
-const { isSignedin, isAuthenticated, isAdmin } = require("../controllers/auth");
-const { getUserById } = require("../controllers/user");
+const { isSignedin, isAuthenticated, isAdmin } = require('../controllers/auth');
+const { getUserById } = require('../controllers/user');
 
-//param routes
-router.param("userId", getUserById);
-router.param("categoryId", getCategoryById);
+// param routes
+router.param('userId', getUserById);
+router.param('categoryId', getCategoryById);
 
-//Create Route
+// Create Route
 router.post(
-  "/category/create/:userId",
+  '/category/create/:userId',
   isSignedin,
   isAuthenticated,
   isAdmin,
   createCategory
 );
 
-//Get category routes
-router.get("/category/:categoryId", getCategory);
-router.get("/categories/all", getAllCategories);
+// Get category routes
+router.get('/category/:categoryId', getCategory);
+router.get('/categories/all', getAllCategories);
 
-//Update category route
+// Update category route
 router.put(
-  "/category/:categoryId/update/:userId",
+  '/category/:categoryId/update/:userId',
   isSignedin,
   isAuthenticated,
   isAdmin,
   updateCategory
 );
 
-//Delete category route
+// Delete category route
 router.delete(
-  "/category/:categoryId/delete/:userId",
+  '/category/:categoryId/delete/:userId',
   isSignedin,
   isAuthenticated,
   isAdmin,
