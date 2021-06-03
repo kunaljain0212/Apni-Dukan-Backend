@@ -1,9 +1,9 @@
-const User = require("../models/user");
-const { check, validationResult } = require("express-validator");
-var jwt = require("jsonwebtoken");
-var expressJwt = require("express-jwt");
+import { validationResult } from 'express-validator';
+import jwt from 'jsonwebtoken';
+import expressJwt from 'express-jwt';
+import User from '../models/user';
 
-exports.signup = (req, res) => {
+export const signup = (req, res) => {
   // console.log("we entered");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -16,7 +16,8 @@ exports.signup = (req, res) => {
   user.save((err, user) => {
     if (err) {
       return res.status(400).json({
-        error: "NOT able to save the user in database. Potential reason could be - Email already exists",
+        error:
+          'NOT able to save the user in database. Potential reason could be - Email already exists',
       });
     }
     res.json({
@@ -27,7 +28,7 @@ exports.signup = (req, res) => {
   });
 };
 
-exports.signin = (req, res) => {
+export const signin = (req, res) => {
   const errors = validationResult(req);
   const { email, password } = req.body;
 
@@ -40,17 +41,17 @@ exports.signin = (req, res) => {
   User.findOne({ email }, (err, user) => {
     if (err || !user) {
       return res.status(400).json({
-        error: "USER not found!!",
+        error: 'USER not found!!',
       });
     }
 
     if (!user.authenticate(password)) {
       return res.status(401).json({
-        error: "CREDENTIALS DO NOT MATCH!!",
+        error: 'CREDENTIALS DO NOT MATCH!!',
       });
     }
 
-    //TOKEN CREATED
+    // TOKEN CREATED
     // console.log(user);
     const token = jwt.sign(
       {
@@ -59,8 +60,8 @@ exports.signin = (req, res) => {
       process.env.SECRET
     );
 
-    //PUTTING TOKEN INSIDE BROWSER OF USER
-    res.cookie("token", token, { expire: new Date() + 9999 });
+    // PUTTING TOKEN INSIDE BROWSER OF USER
+    res.cookie('token', token, { expire: new Date() + 9999 });
 
     const { _id, name, email, role } = user;
     // console.log(user)
@@ -74,40 +75,34 @@ exports.signin = (req, res) => {
   });
 };
 
-exports.signout = (req, res) => {
-  res.clearCookie("token");
+export const signout = (req, res) => {
+  res.clearCookie('token');
   res.json({
-    message: "signout route is working well",
+    message: 'signout route is working well',
   });
 };
 
-//protected routes
-exports.isSignedin = expressJwt({
+// protected routes
+export const isSignedin = expressJwt({
   secret: process.env.SECRET,
-  userProperty: "auth",
+  userProperty: 'auth',
 });
 
-//custom middlewares
-exports.isAuthenticated = (req, res, next) => {
-  let check = (req.profile && req.auth && (req.auth._id == req.profile._id))
-  // console.log(req.auth._id.toString() == req.profile._id.toString());
-  // console.log(req.auth._id);
-  // console.log(req.profile._id);
-  // console.log(check);
-  // console.log(req.profile);
-  // console.log(req.auth);
+// custom middlewares
+export const isAuthenticated = (req, res, next) => {
+  const check = req.profile && req.auth && req.auth._id == req.profile._id;
   if (!check) {
     return res.status(403).json({
-      error: "ACCESS DENIED",
+      error: 'ACCESS DENIED',
     });
   }
   next();
 };
 
-exports.isAdmin = (req, res, next) => {
+export const isAdmin = (req, res, next) => {
   if (req.profile.role === 0) {
     return res.status(403).json({
-      error: "YOU ARE NOT ADMIN, ACCESS DENIED",
+      error: 'YOU ARE NOT ADMIN, ACCESS DENIED',
     });
   }
   next();

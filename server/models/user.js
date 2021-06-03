@@ -1,8 +1,8 @@
-var mongoose = require("mongoose");
-const crypto = require("crypto");
-const uuidv1 = require("uuid/v1");
+import mongoose from 'mongoose';
+import crypto from 'crypto';
+import uuidv1 from 'uuid/v1';
 
-var userSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -43,25 +43,25 @@ var userSchema = new mongoose.Schema(
 );
 
 userSchema.methods = {
-  authenticate: function (plainPassword) {
+  authenticate(plainPassword) {
     return this.securePassword(plainPassword) === this.encry_password;
   },
 
-  securePassword: function (plainPassword) {
-    if (!plainPassword) return "";
+  securePassword(plainPassword) {
+    if (!plainPassword) return '';
     try {
       return crypto
-        .createHmac("sha256", this.salt)
+        .createHmac('sha256', this.salt)
         .update(plainPassword)
-        .digest("hex");
+        .digest('hex');
     } catch (err) {
-      return "";
+      return '';
     }
   },
 };
 
 userSchema
-  .virtual("password")
+  .virtual('password')
   .set(function (password) {
     this._password = password;
     this.salt = uuidv1();
@@ -71,7 +71,7 @@ userSchema
     return this._password;
   });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);
 
 /*
 1) crypto.createHmac('sha256', secret) - Self explanatory initializes a crypto hmac object.
