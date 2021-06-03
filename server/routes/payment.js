@@ -44,8 +44,7 @@ router.post(
 );
 
 router.post('/payment/verification', (req, res) => {
-  console.log('andar aaye');
-  const secret = 'uAK5Xlbk6VVLrpNvLGMgn3fT86YB3ORT';
+  const secret = process.env.PAYMENT_SECRET;
 
   const crypto = require('crypto');
   const shasum = crypto.createHmac('sha256', secret);
