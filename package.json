@@ -9,7 +9,8 @@
     "compile": "babel server --out-dir dist --source-maps inline --copy-files",
     "test": "mocha --require @babel/register --timeout 10000 --exit",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
