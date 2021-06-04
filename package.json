@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "npm run compile && node dist/app.js",
     "dev": "nodemon server/app.js --exec babel-node",
     "compile": "babel server --out-dir dist --source-maps inline --copy-files",
     "lint": "eslint .",
@@ -27,6 +27,7 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
+    "husky": "^6.0.0",
     "@babel/cli": "^7.14.3",
     "@babel/core": "^7.14.3",
     "@babel/eslint-parser": "^7.14.4",
