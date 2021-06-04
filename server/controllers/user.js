@@ -74,7 +74,8 @@ export const pushOrderInPurchaseList = (req, res, next) => {
     { _id: req.profile._id },
     { $push: { purchases } },
     { new: true },
-    (error, purchases) => {
+    // eslint-disable-next-line no-unused-vars
+    (error, _) => {
       if (error) {
         return res.status(400).json({
           erroror: 'Unable to save purchase list',

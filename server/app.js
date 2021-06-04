@@ -4,7 +4,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
-const app = express();
+export const app = express();
 
 import authRoutes from './routes/auth';
 import userRoutes from './routes/user';

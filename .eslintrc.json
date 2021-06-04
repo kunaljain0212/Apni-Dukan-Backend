@@ -1,12 +1,15 @@
 {
   "parser": "babel-eslint",
   "extends": ["eslint:recommended", "plugin:node/recommended", "prettier"],
+  "env": {
+    "mocha": true
+  },
   "plugins": ["prettier", "node"],
   "parserOptions": {
     "sourceType": "module"
   },
   "rules": {
-    "no-unused-vars": ["error", { "args": "none" }],
+    "no-unused-vars": 2,
     "node/no-unsupported-features/es-syntax": 0,
     "node/no-unpublished-import": ["off"],
     "prettier/prettier": [
