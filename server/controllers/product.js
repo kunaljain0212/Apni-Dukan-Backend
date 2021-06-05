@@ -147,6 +147,7 @@ export const updateInventory = (req, res, next) => {
     },
   }));
 
+  // eslint-disable-next-line no-unused-vars
   Product.bulkWrite(myOperations, {}, (error, _) => {
     if (error) {
       return res.status(400).json({
