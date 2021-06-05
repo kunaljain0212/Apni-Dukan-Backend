@@ -25,11 +25,13 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
+    - name: installing
     - run: npm ci
       env: # Or as an environment variable
         DATABASE: ${{ secrets.DATABASE }}
         SECRET: ${{ secrets.SECRET }}
-    - run: echo "$SECRET - $DATABASE"
-    - run: npm run build --if-present
-    - run: npm run test
-    - run: npm run lint:fix
+        TEST: Sskjasndasnd
+    - run: echo "$SECRET - $DATABASE - $TEST"
+#     - run: npm run build --if-present
+#     - run: npm run test
+#     - run: npm run lint:fix
