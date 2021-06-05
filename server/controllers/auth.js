@@ -78,7 +78,7 @@ export const signin = (req, res) => {
 export const signout = (req, res) => {
   res.clearCookie('token');
   res.json({
-    message: 'signout route is working well',
+    message: 'User signed out successfully',
   });
 };
 

@@ -1,6 +1,6 @@
 import express from 'express';
 import { check } from 'express-validator';
-import { signout, signup, signin, isSignedin } from '../controllers/auth';
+import { signout, signup, signin } from '../controllers/auth';
 
 const router = express.Router();
 
@@ -24,9 +24,5 @@ router.post(
 );
 
 router.get('/signout', signout);
-
-router.get('/testroute', isSignedin, (req, res) => {
-  res.send(req.auth);
-});
 
 module.exports = router;
