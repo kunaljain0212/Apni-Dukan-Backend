@@ -22,7 +22,7 @@ export const createCategory = (req, res) => {
         error: 'NOT able to save category',
       });
     }
-    return res.json({ category });
+    return res.status(200).json({ category });
   });
 };
 
