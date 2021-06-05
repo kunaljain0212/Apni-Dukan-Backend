@@ -4,7 +4,7 @@ import request from 'supertest';
 import { app as Server } from '../server/app';
 import User from '../server/models/user';
 
-describe('User SignIn Request', () => {
+describe('User: SignIn Request', () => {
   let app;
   before(async () => {
     app = await request.agent(Server);
@@ -20,7 +20,7 @@ describe('User SignIn Request', () => {
     await User.deleteMany({ email: 'test@gmail.com' });
   });
 
-  it('should give back a success since correct credentials', async () => {
+  it('should give back a success since correct credentials: POST', async () => {
     const response = await app
       .post('/api/signin')
       .send({ email: 'test@gmail.com', password: 'testPassword' });
@@ -41,7 +41,7 @@ describe('User SignIn Request', () => {
     expect(response.body.role).to.be.a('number');
   });
 
-  it('should give back a error since wrong email', async () => {
+  it('should give back a error since wrong email: POST', async () => {
     const response = await app
       .post('/api/signin')
       .send({ email: 'tes@gmail.com', password: 'testPassword' });
@@ -75,7 +75,7 @@ describe('User SignIn Request', () => {
   });
 });
 
-describe('User SignUp Request', () => {
+describe('User: SignUp Request', () => {
   let app;
   before(async () => {
     app = await request.agent(Server);
