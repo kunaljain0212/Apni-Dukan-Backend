@@ -1,6 +1,6 @@
 <div align="center">
 
-# [Apni Dukan](apni-dukan.jainkunal.me)
+# [Apni Dukan Backend](apni-dukan.jainkunal.me)
 
 [![GitHub issues](https://img.shields.io/github/issues/kunaljain0212/Apni-Dukan-Backend?style=for-the-badge)](https://github.com/kunaljain0212/Apni-Dukan-Backend/issues) [![GitHub forks](https://img.shields.io/github/forks/kunaljain0212/Apni-Dukan-Backend?style=for-the-badge)](https://github.com/kunaljain0212/Apni-Dukan-Backend/network) [![GitHub stars](https://img.shields.io/github/stars/kunaljain0212/Apni-Dukan-Backend?style=for-the-badge)](https://github.com/kunaljain0212/Apni-Dukan-Backend/stargazers) [![GitHub license](https://img.shields.io/github/license/kunaljain0212/Apni-Dukan-Backend?style=for-the-badge)](https://github.com/kunaljain0212/Apni-Dukan-Backend/blob/master/LICENSE)
 
@@ -141,6 +141,10 @@ Run `npm start` in the Backend repo first and then in Frontend .
 ### Contribution Guidelines
 
 [Read here](https://github.com/kunaljain0212/Apni-Dukan-Backend/blob/master/CONTRIBUTION.md)
+
+### Connect with me:
+<a href="https://linkedin.com/in/kunaljain0212" target="blank"><img align="center" src="https://content.linkedin.com/content/dam/me/business/en-us/amp/brand-site/v2/bg/LI-Bug.svg.original.svg" alt="kunaljain0212" height="30" width="40" /></a>
+<a href="https://instagram.com/_kunaaaaalll" target="blank"><img align="center" src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="_kunaaaaalll" height="30" width="30" /></a>
 
 ### License
 
