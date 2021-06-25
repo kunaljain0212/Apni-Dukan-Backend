@@ -1,6 +1,6 @@
 <div align="center">
 
-# [Apni Dukan Backend](apni-dukan.jainkunal.me)
+# Apni Dukan Backend
 
 [![GitHub issues](https://img.shields.io/github/issues/kunaljain0212/Apni-Dukan-Backend?style=for-the-badge)](https://github.com/kunaljain0212/Apni-Dukan-Backend/issues) [![GitHub forks](https://img.shields.io/github/forks/kunaljain0212/Apni-Dukan-Backend?style=for-the-badge)](https://github.com/kunaljain0212/Apni-Dukan-Backend/network) [![GitHub stars](https://img.shields.io/github/stars/kunaljain0212/Apni-Dukan-Backend?style=for-the-badge)](https://github.com/kunaljain0212/Apni-Dukan-Backend/stargazers) [![GitHub license](https://img.shields.io/github/license/kunaljain0212/Apni-Dukan-Backend?style=for-the-badge)](https://github.com/kunaljain0212/Apni-Dukan-Backend/blob/master/LICENSE)
 
