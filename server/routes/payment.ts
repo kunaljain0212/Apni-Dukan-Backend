@@ -1,11 +1,12 @@
 import express from 'express';
-import uuidv1 from 'uuid/v1';
+import uuid from 'uuid';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import { isSignedin, isAuthenticated } from '../controllers/auth';
 import { getUserById } from '../controllers/user';
 
 const router = express.Router();
+const uuidv1 = uuid.v1;
 
 router.param('userId', getUserById);
 
@@ -39,7 +40,7 @@ router.post('/payments/order/:userId', isSignedin, isAuthenticated, async (req, 
 });
 
 router.post('/payment/verification', (req, res) => {
-  const secret = process.env.PAYMENT_SECRET;
+  const secret = process.env.PAYMENT_SECRET || '';
   const shasum = crypto.createHmac('sha256', secret);
   shasum.update(JSON.stringify(req.body));
   const digest = shasum.digest('hex');
