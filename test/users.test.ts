@@ -5,7 +5,7 @@ import { app as Server } from '../server/app';
 import User from '../server/models/user';
 
 describe('User: SignIn Request', () => {
-  let app;
+  let app: request.SuperAgentTest;
   before(async () => {
     app = await request.agent(Server);
     await User.create({
@@ -27,13 +27,7 @@ describe('User: SignIn Request', () => {
 
     expect(response.body).to.be.an('object');
     expect(response.status).to.equal(200);
-    expect(response.body).to.have.all.keys(
-      'token',
-      '_id',
-      'name',
-      'email',
-      'role'
-    );
+    expect(response.body).to.have.all.keys('token', '_id', 'name', 'email', 'role');
     expect(response.body.token).to.be.a('string');
     expect(response.body._id).to.be.a('string');
     expect(response.body.name).to.be.a('string');
@@ -64,9 +58,7 @@ describe('User: SignIn Request', () => {
   });
 
   it('should give back a error since empty fields', async () => {
-    const response = await app
-      .post('/api/signin')
-      .send({ email: '', password: '' });
+    const response = await app.post('/api/signin').send({ email: '', password: '' });
 
     expect(response.body).to.be.an('object');
     expect(response.status).to.equal(422);
@@ -76,7 +68,7 @@ describe('User: SignIn Request', () => {
 });
 
 describe('User: SignUp Request', () => {
-  let app;
+  let app: request.SuperAgentTest;
   before(async () => {
     app = await request.agent(Server);
   });

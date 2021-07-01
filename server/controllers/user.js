@@ -1,5 +1,7 @@
 import User from '../models/user';
-import Order from '../models/order';
+import { OrderSchemas } from '../models/order';
+
+const { Order } = OrderSchemas;
 
 export const getUserById = (req, res, next, id) => {
   User.findById(id).exec((error, user) => {
@@ -26,17 +28,17 @@ export const updateUser = (req, res) => {
   User.findByIdAndUpdate(
     { _id: req.profile._id },
     { $set: req.body },
-    { new: true, useFindAndModify: false },
+    {
+      new: true,
+      useFindAndModify: false,
+      fields: { encry_password: 0, salt: 0, createdAt: 0, updatedAt: 0 },
+    },
     (error, user) => {
       if (error) {
         res.status(400).json({
           error: 'You are not authorized to update this information',
         });
       }
-      user.encry_password = undefined;
-      user.salt = undefined;
-      user.createdAt = undefined;
-      user.updatedAt = undefined;
       res.json(user);
     }
   );
@@ -81,7 +83,7 @@ export const pushOrderInPurchaseList = (req, res, next) => {
           erroror: 'Unable to save purchase list',
         });
       }
-      next();
+      return next();
     }
   );
 };

@@ -1,18 +1,16 @@
 import express from 'express';
-
-const router = express.Router();
-
-const { isSignedin, isAuthenticated, isAdmin } = require('../controllers/auth');
-const { getUserById, pushOrderInPurchaseList } = require('../controllers/user');
-const { updateInventory } = require('../controllers/product');
-
-const {
+import { isSignedin, isAuthenticated, isAdmin } from '../controllers/auth';
+import { getUserById, pushOrderInPurchaseList } from '../controllers/user';
+import { updateInventory } from '../controllers/product';
+import {
   getOrderById,
   createOrder,
   getAllOrders,
   getOrderStatus,
   updateOrderStatus,
-} = require('../controllers/order');
+} from '../controllers/order';
+
+const router = express.Router();
 
 // param routes
 router.param('userId', getUserById);
@@ -28,21 +26,9 @@ router.post(
   createOrder
 );
 
-router.get(
-  '/orders/all/:userId',
-  isSignedin,
-  isAuthenticated,
-  isAdmin,
-  getAllOrders
-);
+router.get('/orders/all/:userId', isSignedin, isAuthenticated, isAdmin, getAllOrders);
 
-router.get(
-  '/order/status/:userId',
-  isSignedin,
-  isAuthenticated,
-  isAdmin,
-  getOrderStatus
-);
+router.get('/order/status/:userId', isSignedin, isAuthenticated, isAdmin, getOrderStatus);
 
 router.put(
   '/order/:orderId/status/:userId',

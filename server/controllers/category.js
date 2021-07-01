@@ -16,13 +16,13 @@ export const getCategoryById = (req, res, next, id) => {
 // Create Route
 export const createCategory = (req, res) => {
   const category = new Category(req.body);
-  category.save((error, category) => {
+  category.save((error, savedCategory) => {
     if (error) {
       return res.status(400).json({
         error: 'NOT able to save category',
       });
     }
-    return res.status(200).json({ category });
+    return res.status(200).json({ category: savedCategory });
   });
 };
 
@@ -57,14 +57,14 @@ export const updateCategory = (req, res) => {
 // Delete category route
 export const removeCategory = (req, res) => {
   const { category } = req;
-  category.remove((err, category) => {
+  category.remove((err, removedCategory) => {
     if (err) {
       return res.status(400).json({
         err: 'FAILED TO REMOVE CATEGORY',
       });
     }
     return res.json({
-      message: `${category.name} SUCCESSFULLY DELETED`,
+      message: `${removedCategory.name} SUCCESSFULLY DELETED`,
     });
   });
 };

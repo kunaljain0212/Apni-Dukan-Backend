@@ -1,4 +1,6 @@
-import { Order } from '../models/order';
+import { OrderSchemas } from '../models/order';
+
+const { Order } = OrderSchemas;
 
 export const getOrderById = (req, res, next, id) => {
   Order.findById(id)
@@ -10,7 +12,7 @@ export const getOrderById = (req, res, next, id) => {
         });
       }
       req.order = order;
-      next();
+      return next();
     });
 };
 
@@ -40,20 +42,15 @@ export const getAllOrders = (req, res) => {
     });
 };
 
-export const getOrderStatus = (req, res) =>
-  res.json(Order.schema.path('status').enumValues);
+export const getOrderStatus = (req, res) => res.json(Order.schema.path('status').enumValues);
 
 export const updateOrderStatus = (req, res) => {
-  Order.updateOne(
-    { _id: req.body.orderId },
-    { $set: { status: req.body.status } },
-    (err, data) => {
-      if (err) {
-        return res.status(400).json({
-          err: 'Failed to update status in DB',
-        });
-      }
-      return res.json(data);
+  Order.updateOne({ _id: req.body.orderId }, { $set: { status: req.body.status } }, (err, data) => {
+    if (err) {
+      return res.status(400).json({
+        err: 'Failed to update status in DB',
+      });
     }
-  );
+    return res.json(data);
+  });
 };

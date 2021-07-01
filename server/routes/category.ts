@@ -1,31 +1,23 @@
 import express from 'express';
-
-const router = express.Router();
-
-const {
+import {
   getCategoryById,
   createCategory,
   getCategory,
   getAllCategories,
   updateCategory,
   removeCategory,
-} = require('../controllers/category');
+} from '../controllers/category';
+import { isSignedin, isAuthenticated, isAdmin } from '../controllers/auth';
+import { getUserById } from '../controllers/user';
 
-const { isSignedin, isAuthenticated, isAdmin } = require('../controllers/auth');
-const { getUserById } = require('../controllers/user');
+const router = express.Router();
 
 // param routes
 router.param('userId', getUserById);
 router.param('categoryId', getCategoryById);
 
 // Create Route
-router.post(
-  '/category/create/:userId',
-  isSignedin,
-  isAuthenticated,
-  isAdmin,
-  createCategory
-);
+router.post('/category/create/:userId', isSignedin, isAuthenticated, isAdmin, createCategory);
 
 // Get category routes
 router.get('/category/:categoryId', getCategory);
@@ -49,4 +41,4 @@ router.delete(
   removeCategory
 );
 
-module.exports = router;
+export default router;

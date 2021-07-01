@@ -13,13 +13,14 @@ export const getProductById = (req, res, next, id) => {
         });
       }
       req.product = product;
-      next();
+      return next();
     });
 };
 
 export const createProduct = (req, res) => {
   const form = formidable.IncomingForm();
   form.keepExtensions = true;
+  // eslint-disable-next-line consistent-return
   form.parse(req, (error, fields, file) => {
     if (error) {
       return res.status(400).json({
@@ -46,13 +47,13 @@ export const createProduct = (req, res) => {
       product.photo.contentType = file.photo.type;
     }
 
-    product.save((error, product) => {
-      if (error) {
+    product.save((saveError, savedProduct) => {
+      if (saveError) {
         return res.status(400).json({
           error: 'Product not saved in DB',
         });
       }
-      res.json(product);
+      return res.json(savedProduct);
     });
   });
 };
@@ -67,12 +68,13 @@ export const photo = (req, res, next) => {
     res.set('Content-Type', req.product.photo.contentType);
     return res.send(req.product.photo.data);
   }
-  next();
+  return next();
 };
 
 export const updateProduct = (req, res) => {
   const form = formidable.IncomingForm();
   form.keepExtensions = true;
+  // eslint-disable-next-line consistent-return
   form.parse(req, (error, fields, file) => {
     if (error) {
       return res.status(400).json({
@@ -95,13 +97,13 @@ export const updateProduct = (req, res) => {
       product.photo.contentType = file.photo.type;
     }
 
-    product.save((error, product) => {
-      if (error) {
+    product.save((saveError, savedProduct) => {
+      if (saveError) {
         return res.status(400).json({
           error: 'Updation failed in DB',
         });
       }
-      res.json(product);
+      return res.json(savedProduct);
     });
   });
 };
@@ -114,14 +116,14 @@ export const deleteProduct = (req, res) => {
         error: 'Product not deleted from DB',
       });
     }
-    res.json({
+    return res.json({
       message: `${deletedProduct.name} deleted from DB`,
     });
   });
 };
 
 export const getAllProducts = (req, res) => {
-  const limit = req.query.limit ? parseInt(req.query.limit) : 8;
+  const limit = req.query.limit ? parseInt(req.query.limit, 10) : 8;
   const sortBy = req.query.sortBy ? req.query.sortBy : '_id';
 
   Product.find()
@@ -135,7 +137,7 @@ export const getAllProducts = (req, res) => {
           error: 'No products found',
         });
       }
-      res.json(products);
+      return res.json(products);
     });
 };
 
@@ -154,7 +156,7 @@ export const updateInventory = (req, res, next) => {
         error: 'Inventory updation failed',
       });
     }
-    next();
+    return next();
   });
 };
 
@@ -166,6 +168,6 @@ export const getAllUniqueCategories = (req, res) => {
         erroror: 'No category found for product',
       });
     }
-    res.json(category);
+    return res.json(category);
   });
 };

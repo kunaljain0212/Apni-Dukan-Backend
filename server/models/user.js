@@ -50,10 +50,7 @@ userSchema.methods = {
   securePassword(plainPassword) {
     if (!plainPassword) return '';
     try {
-      return crypto
-        .createHmac('sha256', this.salt)
-        .update(plainPassword)
-        .digest('hex');
+      return crypto.createHmac('sha256', this.salt).update(plainPassword).digest('hex');
     } catch (err) {
       return '';
     }
@@ -71,7 +68,7 @@ userSchema
     return this._password;
   });
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);
 
 /*
 1) crypto.createHmac('sha256', secret) - Self explanatory initializes a crypto hmac object.

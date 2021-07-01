@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import expressJwt from 'express-jwt';
 import User from '../models/user';
 
+// eslint-disable-next-line consistent-return
 export const signup = (req, res) => {
   // console.log("we entered");
   const errors = validationResult(req);
@@ -13,21 +14,22 @@ export const signup = (req, res) => {
   }
 
   const user = new User(req.body);
-  user.save((err, user) => {
+  user.save((err, savedUser) => {
     if (err) {
       return res.status(400).json({
         error:
           'NOT able to save the user in database. Potential reason could be - Email already exists',
       });
     }
-    res.json({
-      name: user.name,
-      email: user.email,
-      id: user._id,
+    return res.json({
+      name: savedUser.name,
+      email: savedUser.email,
+      id: savedUser._id,
     });
   });
 };
 
+// eslint-disable-next-line consistent-return
 export const signin = (req, res) => {
   const errors = validationResult(req);
   const { email, password } = req.body;
@@ -63,6 +65,7 @@ export const signin = (req, res) => {
     // PUTTING TOKEN INSIDE BROWSER OF USER
     res.cookie('token', token, { expire: new Date() + 9999 });
 
+    // eslint-disable-next-line no-shadow
     const { _id, name, email, role } = user;
     // console.log(user)
     return res.json({
@@ -77,7 +80,7 @@ export const signin = (req, res) => {
 
 export const signout = (req, res) => {
   res.clearCookie('token');
-  res.json({
+  return res.json({
     message: 'User signed out successfully',
   });
 };
@@ -90,13 +93,14 @@ export const isSignedin = expressJwt({
 
 // custom middlewares
 export const isAuthenticated = (req, res, next) => {
+  // eslint-disable-next-line eqeqeq
   const check = req.profile && req.auth && req.auth._id == req.profile._id;
   if (!check) {
     return res.status(403).json({
       error: 'ACCESS DENIED',
     });
   }
-  next();
+  return next();
 };
 
 export const isAdmin = (req, res, next) => {
@@ -105,5 +109,5 @@ export const isAdmin = (req, res, next) => {
       error: 'YOU ARE NOT ADMIN, ACCESS DENIED',
     });
   }
-  next();
+  return next();
 };
