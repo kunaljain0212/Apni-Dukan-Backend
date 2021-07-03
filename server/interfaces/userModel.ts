@@ -1,4 +1,6 @@
-export default interface UserModel {
+import { Document, Model } from 'mongoose';
+
+export interface IUser extends Document {
   name: string;
   lastname: string;
   email: string;
@@ -10,7 +12,9 @@ export default interface UserModel {
   role: number;
   purchases: [unknown];
   // eslint-disable-next-line no-unused-vars
-  securePassword: (arg0: string) => string;
+  securePassword: (plainPassword: string) => string;
   // eslint-disable-next-line no-unused-vars
-  authenticate: (this: UserModel, plainPassword: string) => boolean;
+  authenticate: (plainPassword: string) => boolean;
 }
+
+export type IUserInstanceCreation = Model<IUser>;

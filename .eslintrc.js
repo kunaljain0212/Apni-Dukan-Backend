@@ -9,7 +9,6 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'airbnb-base',
     'plugin:prettier/recommended',
-    'plugin:import/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
@@ -21,14 +20,10 @@ module.exports = {
   },
   plugins: ['@typescript-eslint', 'prettier', 'import'],
   rules: {
-    'prettier/prettier': 'error',
-    'import/no-unresolved': [2, { commonjs: true, amd: true }],
-    'import/named': 2,
-    'import/namespace': 2,
-    'import/default': 2,
-    'import/export': 2,
+    'prettier/prettier': 'warn',
     'import/extensions': 'off',
-    'import/prefer-default-export': 'off',
+    'import/no-unresolved': 'error',
+    'no-underscore-dangle': 'off',
     'no-console': 'off',
     'import/order': [
       'error',
@@ -40,6 +35,20 @@ module.exports = {
         ],
       },
     ],
-    'no-underscore-dangle': 'off',
+  },
+  settings: {
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts'],
+    },
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.ts'],
+        moduleDirectory: ['node_modules', 'server/'],
+      },
+      typescript: {
+        alwaysTryTypes: true,
+        project: './tsconfig.json',
+      },
+    },
   },
 };

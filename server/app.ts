@@ -16,7 +16,7 @@ const URI: string | undefined =
   process.env.NODE_ENV === 'development' ? process.env.DATABASE_DOCKER : process.env.DATABASE;
 
 mongoose
-  .connect(URI || '', {
+  .connect(URI as string, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
