@@ -34,7 +34,6 @@ app.use(cookieParser());
 app.use(cors());
 
 // My Routes
-
 app.get('/', (req, res) => {
   res.status(200).json({
     message: `Server is up and running on port ${process.env.PORT || 8000}`,

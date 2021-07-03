@@ -22,6 +22,7 @@ module.exports = {
   rules: {
     'prettier/prettier': 'warn',
     'import/extensions': 'off',
+    'import/prefer-default-export': 'off',
     'import/no-unresolved': 'error',
     'no-underscore-dangle': 'off',
     'no-console': 'off',

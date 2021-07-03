@@ -1,4 +1,4 @@
-import { Document, Model } from 'mongoose';
+import { Document } from 'mongoose';
 
 export interface IUser extends Document {
   name: string;
@@ -16,5 +16,3 @@ export interface IUser extends Document {
   // eslint-disable-next-line no-unused-vars
   authenticate: (plainPassword: string) => boolean;
 }
-
-export type IUserInstanceCreation = Model<IUser>;
