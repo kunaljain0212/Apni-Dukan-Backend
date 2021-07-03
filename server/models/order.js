@@ -1,10 +1,8 @@
 import mongoose from 'mongoose';
 
-const { ObjectId } = mongoose.Schema;
-
 const ProductCartSchema = new mongoose.Schema({
   product: {
-    type: ObjectId,
+    type: 'ObjectId',
     ref: 'Product',
   },
   name: String,
@@ -29,7 +27,7 @@ const OrderSchema = new mongoose.Schema(
     },
     updated: Date,
     user: {
-      type: ObjectId,
+      type: 'ObjectId',
       ref: 'User',
     },
   },
