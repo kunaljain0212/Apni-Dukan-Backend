@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import { IOrder } from 'server/interfaces/orderModel';
+import { IProductCartSchema } from 'server/interfaces/productCartModel';
 
 const ProductCartSchema = new mongoose.Schema({
   product: {
@@ -10,7 +12,7 @@ const ProductCartSchema = new mongoose.Schema({
   price: Number,
 });
 
-const ProductCart = mongoose.model('ProductCart', ProductCartSchema);
+const ProductCart = mongoose.model<IProductCartSchema>('ProductCart', ProductCartSchema);
 
 const OrderSchema = new mongoose.Schema(
   {
@@ -36,6 +38,6 @@ const OrderSchema = new mongoose.Schema(
   }
 );
 
-const Order = mongoose.model('Order', OrderSchema);
+const Order = mongoose.model<IOrder>('Order', OrderSchema);
 
 export const OrderSchemas = { Order, ProductCart };
