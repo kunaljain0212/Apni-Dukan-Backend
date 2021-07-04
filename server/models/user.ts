@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 import uuid from 'uuid';
-import { IUser } from 'server/interfaces/userModel';
+import { IUser } from 'server/interfaces/UserModel';
 
 const uuidv1 = uuid.v1;
 

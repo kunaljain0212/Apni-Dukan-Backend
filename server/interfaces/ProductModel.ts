@@ -1,5 +1,5 @@
 import { Document, PopulatedDoc } from 'mongoose';
-import { ICategory } from './categoryModel';
+import { ICategory } from './CategoryModel';
 
 interface Photo {
   data: {
@@ -18,3 +18,16 @@ export interface IProduct {
   sold: number;
   photo: Photo;
 }
+
+export interface Purchases {
+  _id: string;
+  name: string;
+  description: string;
+  category: string;
+  quantity: number;
+  amount: number;
+  // eslint-disable-next-line camelcase
+  transaction_id: string;
+}
+
+export type PurchasesArray = Purchases[];

@@ -1,5 +1,5 @@
 import { Document, PopulatedDoc } from 'mongoose';
-import { IProduct } from './productModel';
+import { IProduct } from './ProductModel';
 
 export interface IProductCartSchema {
   product: PopulatedDoc<IProduct & Document>;

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IProduct } from 'server/interfaces/productModel';
+import { IProduct } from 'server/interfaces/ProductModel';
 
 const productSchema = new mongoose.Schema<IProduct>(
   {

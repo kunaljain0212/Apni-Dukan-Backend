@@ -1,6 +1,6 @@
 import { Document, PopulatedDoc } from 'mongoose';
-import { IProductCartSchema } from './productCartModel';
-import { IUser } from './userModel';
+import { IProductCartSchema } from './ProductCartModel';
+import { IUser } from './UserModel';
 
 export interface IOrder {
   products: IProductCartSchema[];

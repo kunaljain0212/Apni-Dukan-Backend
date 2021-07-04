@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import { IOrder } from 'server/interfaces/orderModel';
-import { IProductCartSchema } from 'server/interfaces/productCartModel';
+import { IOrder } from 'server/interfaces/OrderModel';
+import { IProductCartSchema } from 'server/interfaces/ProductCartModel';
 
 const ProductCartSchema = new mongoose.Schema({
   product: {

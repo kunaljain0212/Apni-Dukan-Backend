@@ -26,6 +26,7 @@ module.exports = {
     'import/no-unresolved': 'error',
     'no-underscore-dangle': 'off',
     'no-console': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     'import/order': [
       'error',
       {
