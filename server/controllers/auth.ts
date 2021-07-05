@@ -8,7 +8,6 @@ import { IUser } from 'server/interfaces/UserModel';
 
 // eslint-disable-next-line consistent-return
 export const signup = (req: Request, res: Response): any => {
-  // console.log("we entered");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({
@@ -57,7 +56,6 @@ export const signin = (req: Request, res: Response): any => {
     }
 
     // TOKEN CREATED
-    // console.log(user);
     const token = jwt.sign(
       {
         _id: user._id,
@@ -70,7 +68,6 @@ export const signin = (req: Request, res: Response): any => {
 
     // eslint-disable-next-line no-shadow
     const { _id, name, email, role } = user;
-    // console.log(user)
     return res.json({
       token,
       _id,

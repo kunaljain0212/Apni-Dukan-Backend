@@ -79,13 +79,12 @@ export const pushOrderInPurchaseList = (req: IRequest, res: Response, next: Next
     { _id: req.profile._id },
     { $push: { purchases } },
     { new: true },
-    (error, result) => {
+    (error, _result) => {
       if (error) {
         return res.status(400).json({
           error: 'Unable to save purchase list',
         });
       }
-      console.log(result);
       return next();
     }
   );

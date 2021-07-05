@@ -28,7 +28,6 @@ router.post('/payments/order/:userId', isSignedin, isAuthenticated, async (req, 
   };
   try {
     const response = await razorpay.orders.create(options);
-    console.log(response);
     res.json({
       id: response.id,
       currency: 'INR',
@@ -44,7 +43,6 @@ router.post('/payment/verification', (req, res) => {
   const shasum = crypto.createHmac('sha256', secret);
   shasum.update(JSON.stringify(req.body));
   const digest = shasum.digest('hex');
-  console.log(digest, req.headers['x-razorpay-signature']);
 
   if (digest === req.headers['x-razorpay-signature']) {
     res.status(200).json({ message: 'Payment verification successful' });

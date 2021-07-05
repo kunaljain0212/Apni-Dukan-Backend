@@ -10,8 +10,8 @@ import productRoutes from './routes/product';
 import paymentRoutes from './routes/payment';
 
 export const app = express();
-// DB connection
 
+// DB connection
 const URI: string | undefined =
   process.env.NODE_ENV === 'development' ? process.env.DATABASE_DOCKER : process.env.DATABASE;
 

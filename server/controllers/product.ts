@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import { Request, Response, NextFunction } from 'express';
 import formidable from 'formidable';
 import fs from 'fs';
@@ -91,7 +92,6 @@ export const updateProduct = (req: IRequest, res: Response): any => {
 
     let { product } = req;
     product = Object.assign(product, fields);
-    console.log(product);
 
     if (file.photo) {
       if ((file.photo as formidable.File).size > 3000000) {
@@ -140,6 +140,11 @@ export const getAllProducts = (req: IRequest, res: Response): any => {
     .exec((error, products) => {
       if (error) {
         return res.status(400).json({
+          error: 'Error connecting to DB',
+        });
+      }
+      if (products.length === 0) {
+        return res.status(400).json({
           error: 'No products found',
         });
       }
@@ -155,19 +160,17 @@ export const updateInventory = (req: IRequest, res: Response, next: NextFunction
     },
   }));
 
-  Product.bulkWrite(myOperations, {}, (error, updatedInventory) => {
+  Product.bulkWrite(myOperations, {}, (error, _updatedInventory) => {
     if (error) {
       return res.status(400).json({
         error: 'Inventory updation failed',
       });
     }
-    console.log(updatedInventory);
     return next();
   });
 };
 
-export const getAllUniqueCategories = (req: Request, res: Response): any => {
-  // console.log("came in")
+export const getAllUniqueCategories = (_req: Request, res: Response): any => {
   Product.distinct('category', {}, (erroror, category) => {
     if (erroror) {
       return res.status(400).json({
