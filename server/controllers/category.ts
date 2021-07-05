@@ -1,7 +1,15 @@
+import { Request, Response, NextFunction } from 'express';
+import { ICategory } from 'server/interfaces/CategoryModel';
+import { IRequest } from 'server/interfaces/ExtendedRequest';
 import Category from '../models/category';
 
 // param routes
-export const getCategoryById = (req, res, next, id) => {
+export const getCategoryById = (
+  req: IRequest,
+  res: Response,
+  next: NextFunction,
+  id: string
+): any => {
   Category.findById(id).exec((err, cate) => {
     if (err) {
       return res.status(400).json({
@@ -14,9 +22,9 @@ export const getCategoryById = (req, res, next, id) => {
 };
 
 // Create Route
-export const createCategory = (req, res) => {
+export const createCategory = (req: Request, res: Response): any => {
   const category = new Category(req.body);
-  category.save((error, savedCategory) => {
+  category.save((error: any, savedCategory: ICategory) => {
     if (error) {
       return res.status(400).json({
         error: 'NOT able to save category',
@@ -27,10 +35,10 @@ export const createCategory = (req, res) => {
 };
 
 // Get category routes
-export const getCategory = (req, res) => res.json(req.category);
+export const getCategory = (req: IRequest, res: Response): any => res.json(req.category);
 
-export const getAllCategories = (req, res) => {
-  Category.find().exec((err, categories) => {
+export const getAllCategories = (req: Request, res: Response): any => {
+  Category.find().exec((err: any, categories: ICategory[]) => {
     if (err) {
       return res.status(400).json({
         error: err,
@@ -41,11 +49,11 @@ export const getAllCategories = (req, res) => {
 };
 
 // Update category route
-export const updateCategory = (req, res) => {
+export const updateCategory = (req: IRequest, res: Response): any => {
   const { category } = req;
   category.name = req.body.name;
-  category.save((err, updatedCategory) => {
-    if (err) {
+  category.save((error: any, updatedCategory: ICategory) => {
+    if (error) {
       return res.status(400).json({
         err: 'FAILED TO UPDATE CATEGORY',
       });
@@ -55,10 +63,10 @@ export const updateCategory = (req, res) => {
 };
 
 // Delete category route
-export const removeCategory = (req, res) => {
+export const removeCategory = (req: IRequest, res: Response): any => {
   const { category } = req;
-  category.remove((err, removedCategory) => {
-    if (err) {
+  category.remove((error: any, removedCategory: ICategory) => {
+    if (error) {
       return res.status(400).json({
         err: 'FAILED TO REMOVE CATEGORY',
       });

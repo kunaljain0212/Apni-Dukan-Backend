@@ -1,10 +1,13 @@
+import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import expressJwt from 'express-jwt';
 import User from '../models/user';
+import { IRequest } from 'server/interfaces/ExtendedRequest';
+import { IUser } from 'server/interfaces/UserModel';
 
 // eslint-disable-next-line consistent-return
-export const signup = (req, res) => {
+export const signup = (req: Request, res: Response): any => {
   // console.log("we entered");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -30,7 +33,7 @@ export const signup = (req, res) => {
 };
 
 // eslint-disable-next-line consistent-return
-export const signin = (req, res) => {
+export const signin = (req: Request, res: Response): any => {
   const errors = validationResult(req);
   const { email, password } = req.body;
 
@@ -40,7 +43,7 @@ export const signin = (req, res) => {
     });
   }
 
-  User.findOne({ email }, (err, user) => {
+  User.findOne({ email }, (err: any, user: IUser) => {
     if (err || !user) {
       return res.status(400).json({
         error: 'USER not found!!',
@@ -59,11 +62,11 @@ export const signin = (req, res) => {
       {
         _id: user._id,
       },
-      process.env.SECRET
+      process.env.SECRET || ''
     );
 
     // PUTTING TOKEN INSIDE BROWSER OF USER
-    res.cookie('token', token, { expire: new Date() + 9999 });
+    res.cookie('token', token, { expires: new Date() });
 
     // eslint-disable-next-line no-shadow
     const { _id, name, email, role } = user;
@@ -78,7 +81,7 @@ export const signin = (req, res) => {
   });
 };
 
-export const signout = (req, res) => {
+export const signout = (req: Request, res: Response): any => {
   res.clearCookie('token');
   return res.json({
     message: 'User signed out successfully',
@@ -87,12 +90,12 @@ export const signout = (req, res) => {
 
 // protected routes
 export const isSignedin = expressJwt({
-  secret: process.env.SECRET,
+  secret: process.env.SECRET || '',
   userProperty: 'auth',
 });
 
 // custom middlewares
-export const isAuthenticated = (req, res, next) => {
+export const isAuthenticated = (req: IRequest, res: Response, next: NextFunction): any => {
   // eslint-disable-next-line eqeqeq
   const check = req.profile && req.auth && req.auth._id == req.profile._id;
   if (!check) {
@@ -103,7 +106,7 @@ export const isAuthenticated = (req, res, next) => {
   return next();
 };
 
-export const isAdmin = (req, res, next) => {
+export const isAdmin = (req: IRequest, res: Response, next: NextFunction): any => {
   if (req.profile.role === 0) {
     return res.status(403).json({
       error: 'YOU ARE NOT ADMIN, ACCESS DENIED',
