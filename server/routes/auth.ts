@@ -25,4 +25,4 @@ router.post(
 
 router.get('/signout', signout);
 
-module.exports = router;
+export default router;

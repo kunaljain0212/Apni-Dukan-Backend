@@ -1,7 +1,4 @@
 import express from 'express';
-
-const router = express.Router();
-
 import {
   getProductById,
   createProduct,
@@ -15,21 +12,18 @@ import {
 import { isSignedin, isAuthenticated, isAdmin } from '../controllers/auth';
 import { getUserById } from '../controllers/user';
 
+const router = express.Router();
+
 // param routes
 router.param('userId', getUserById);
 router.param('productId', getProductById);
 
 // Create Route
-router.post(
-  '/product/create/:userId',
-  isSignedin,
-  isAuthenticated,
-  isAdmin,
-  createProduct
-);
+router.post('/product/create/:userId', isSignedin, isAuthenticated, isAdmin, createProduct);
 
 // Get product routes
 router.get('/product/:productId', getProduct);
+
 // for optimisation
 router.get('/product/photo/:productId', photo);
 
@@ -45,4 +39,4 @@ router.get('/products', getAllProducts);
 // getting all categories so that user can put his product in one of these categories
 router.get('/product/categories', getAllUniqueCategories);
 
-module.exports = router;
+export default router;

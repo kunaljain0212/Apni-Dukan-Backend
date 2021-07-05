@@ -6,10 +6,10 @@ import User from '../server/models/user';
 import Category from '../server/models/category';
 
 describe('Admin: Category Requests', () => {
-  let app;
-  let token;
-  let _id;
-  let categoryId;
+  let app: request.SuperAgentTest;
+  let token: string;
+  let _id: string;
+  let categoryId: string;
   before(async () => {
     app = await request.agent(Server);
     await User.create({
@@ -37,18 +37,11 @@ describe('Admin: Category Requests', () => {
       .post(`/api/category/create/${_id}`)
       .set('Authorization', `bearer ${token}`)
       .send({ name: 'Test' });
-
     categoryId = response.body.category._id;
     expect(response.body).to.be.an('object');
     expect(response.status).to.equal(200);
     expect(response.body).to.have.all.keys('category');
-    expect(response.body.category).to.have.all.keys(
-      'name',
-      '_id',
-      'createdAt',
-      'updatedAt',
-      '__v'
-    );
+    expect(response.body.category).to.have.all.keys('name', '_id', 'createdAt', 'updatedAt', '__v');
     expect(response.body.category.name).to.be.a('string');
     expect(response.body.category._id).to.be.a('string');
     expect(response.body.category.createdAt).to.be.a('string');
@@ -61,13 +54,7 @@ describe('Admin: Category Requests', () => {
 
     expect(response.body).to.be.an('object');
     expect(response.status).to.equal(200);
-    expect(response.body).to.have.all.keys(
-      'name',
-      '_id',
-      'createdAt',
-      'updatedAt',
-      '__v'
-    );
+    expect(response.body).to.have.all.keys('name', '_id', 'createdAt', 'updatedAt', '__v');
     expect(response.body.name).to.be.a('string');
     expect(response.body._id).to.be.a('string');
     expect(response.body.createdAt).to.be.a('string');
@@ -80,13 +67,7 @@ describe('Admin: Category Requests', () => {
 
     expect(response.body).to.be.an('Array');
     expect(response.status).to.equal(200);
-    expect(response.body[0]).to.have.all.keys(
-      'name',
-      '_id',
-      'createdAt',
-      'updatedAt',
-      '__v'
-    );
+    expect(response.body[0]).to.have.all.keys('name', '_id', 'createdAt', 'updatedAt', '__v');
     expect(response.body[0].name).to.be.a('string');
     expect(response.body[0]._id).to.be.a('string');
     expect(response.body[0].createdAt).to.be.a('string');
@@ -102,13 +83,7 @@ describe('Admin: Category Requests', () => {
 
     expect(response.body).to.be.an('object');
     expect(response.status).to.equal(200);
-    expect(response.body).to.have.all.keys(
-      'name',
-      '_id',
-      'createdAt',
-      'updatedAt',
-      '__v'
-    );
+    expect(response.body).to.have.all.keys('name', '_id', 'createdAt', 'updatedAt', '__v');
     expect(response.body.name).to.be.a('string');
     expect(response.body.name).to.be.equal('Test2');
     expect(response.body._id).to.be.a('string');

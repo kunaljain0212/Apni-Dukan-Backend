@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
-
-const { ObjectId } = mongoose.Schema;
+import { IOrder } from 'server/interfaces/OrderModel';
+import { IProductCartSchema } from 'server/interfaces/ProductCartModel';
 
 const ProductCartSchema = new mongoose.Schema({
   product: {
-    type: ObjectId,
+    type: 'ObjectId',
     ref: 'Product',
   },
   name: String,
@@ -12,7 +12,7 @@ const ProductCartSchema = new mongoose.Schema({
   price: Number,
 });
 
-const ProductCart = mongoose.model('ProductCart', ProductCartSchema);
+const ProductCart = mongoose.model<IProductCartSchema>('ProductCart', ProductCartSchema);
 
 const OrderSchema = new mongoose.Schema(
   {
@@ -29,7 +29,7 @@ const OrderSchema = new mongoose.Schema(
     },
     updated: Date,
     user: {
-      type: ObjectId,
+      type: 'ObjectId',
       ref: 'User',
     },
   },
@@ -38,6 +38,6 @@ const OrderSchema = new mongoose.Schema(
   }
 );
 
-const Order = mongoose.model('Order', OrderSchema);
+const Order = mongoose.model<IOrder>('Order', OrderSchema);
 
-module.exports = { Order, ProductCart };
+export const OrderSchemas = { Order, ProductCart };

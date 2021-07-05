@@ -1,9 +1,17 @@
+/* eslint-disable eqeqeq */
+import { Request, Response, NextFunction } from 'express';
 import formidable from 'formidable';
-// const _ = require("lodash");
 import fs from 'fs';
+import { IRequest } from 'server/interfaces/ExtendedRequest';
+import { IProduct } from 'server/interfaces/ProductModel';
 import Product from '../models/product';
 
-export const getProductById = (req, res, next, id) => {
+export const getProductById = (
+  req: IRequest,
+  res: Response,
+  next: NextFunction,
+  id: string
+): any => {
   Product.findById(id)
     .populate('category')
     .exec((error, product) => {
@@ -13,13 +21,14 @@ export const getProductById = (req, res, next, id) => {
         });
       }
       req.product = product;
-      next();
+      return next();
     });
 };
 
-export const createProduct = (req, res) => {
-  const form = formidable.IncomingForm();
-  form.keepExtensions = true;
+export const createProduct = (req: Request, res: Response): any => {
+  const form = new formidable.IncomingForm();
+
+  // eslint-disable-next-line consistent-return
   form.parse(req, (error, fields, file) => {
     if (error) {
       return res.status(400).json({
@@ -36,43 +45,44 @@ export const createProduct = (req, res) => {
     }
 
     const product = new Product(fields);
-    if (file.photo) {
-      if (file.photo.size > 3000000) {
+    if (file.photo as formidable.File) {
+      if ((file.photo as formidable.File).size > 3000000) {
         return res.status(400).json({
           error: 'File size too big!',
         });
       }
-      product.photo.data = fs.readFileSync(file.photo.path);
-      product.photo.contentType = file.photo.type;
+      product.photo.data = fs.readFileSync((file.photo as formidable.File).path);
+      product.photo.contentType = (file.photo as formidable.File).type as string;
     }
 
-    product.save((error, product) => {
-      if (error) {
+    product.save((saveError, savedProduct) => {
+      if (saveError) {
         return res.status(400).json({
           error: 'Product not saved in DB',
         });
       }
-      res.json(product);
+      return res.json(savedProduct);
     });
   });
 };
 
-export const getProduct = (req, res) => {
+export const getProduct = (req: IRequest, res: Response): any => {
   req.product.photo = undefined;
   return res.json(req.product);
 };
 
-export const photo = (req, res, next) => {
+export const photo = (req: IRequest, res: Response, next: NextFunction): any => {
   if (req.product.photo.data) {
     res.set('Content-Type', req.product.photo.contentType);
     return res.send(req.product.photo.data);
   }
-  next();
+  return next();
 };
 
-export const updateProduct = (req, res) => {
-  const form = formidable.IncomingForm();
-  form.keepExtensions = true;
+export const updateProduct = (req: IRequest, res: Response): any => {
+  const form = new formidable.IncomingForm();
+
+  // eslint-disable-next-line consistent-return
   form.parse(req, (error, fields, file) => {
     if (error) {
       return res.status(400).json({
@@ -81,47 +91,45 @@ export const updateProduct = (req, res) => {
     }
 
     let { product } = req;
-    // product = _.extend(product, fields);
     product = Object.assign(product, fields);
-    console.log(product);
 
     if (file.photo) {
-      if (file.photo.size > 3000000) {
+      if ((file.photo as formidable.File).size > 3000000) {
         return res.status(400).json({
           error: 'File size too big!',
         });
       }
-      product.photo.data = fs.readFileSync(file.photo.path);
-      product.photo.contentType = file.photo.type;
+      product.photo.data = fs.readFileSync((file.photo as formidable.File).path);
+      product.photo.contentType = (file.photo as formidable.File).type;
     }
 
-    product.save((error, product) => {
-      if (error) {
+    product.save((saveError: any, savedProduct: IProduct) => {
+      if (saveError) {
         return res.status(400).json({
           error: 'Updation failed in DB',
         });
       }
-      res.json(product);
+      return res.json(savedProduct);
     });
   });
 };
 
-export const deleteProduct = (req, res) => {
+export const deleteProduct = (req: IRequest, res: Response): any => {
   const { product } = req;
-  product.remove((error, deletedProduct) => {
+  product.remove((error: any, deletedProduct: IProduct) => {
     if (error) {
       return res.status(400).json({
         error: 'Product not deleted from DB',
       });
     }
-    res.json({
+    return res.json({
       message: `${deletedProduct.name} deleted from DB`,
     });
   });
 };
 
-export const getAllProducts = (req, res) => {
-  const limit = req.query.limit ? parseInt(req.query.limit) : 8;
+export const getAllProducts = (req: IRequest, res: Response): any => {
+  const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 8;
   const sortBy = req.query.sortBy ? req.query.sortBy : '_id';
 
   Product.find()
@@ -132,40 +140,43 @@ export const getAllProducts = (req, res) => {
     .exec((error, products) => {
       if (error) {
         return res.status(400).json({
+          error: 'Error connecting to DB',
+        });
+      }
+      if (products.length === 0) {
+        return res.status(400).json({
           error: 'No products found',
         });
       }
-      res.json(products);
+      return res.json(products);
     });
 };
 
-export const updateInventory = (req, res, next) => {
-  const myOperations = req.body.order.products.map((prod) => ({
+export const updateInventory = (req: IRequest, res: Response, next: NextFunction): any => {
+  const myOperations = req.body.order.products.map((prod: any) => ({
     updateOne: {
       filter: { _id: prod._id },
       update: { $inc: { stock: -prod.count, sold: +prod.count } },
     },
   }));
 
-  // eslint-disable-next-line no-unused-vars
-  Product.bulkWrite(myOperations, {}, (error, _) => {
+  Product.bulkWrite(myOperations, {}, (error, _updatedInventory) => {
     if (error) {
       return res.status(400).json({
         error: 'Inventory updation failed',
       });
     }
-    next();
+    return next();
   });
 };
 
-export const getAllUniqueCategories = (req, res) => {
-  // console.log("came in")
+export const getAllUniqueCategories = (_req: Request, res: Response): any => {
   Product.distinct('category', {}, (erroror, category) => {
     if (erroror) {
       return res.status(400).json({
         erroror: 'No category found for product',
       });
     }
-    res.json(category);
+    return res.json(category);
   });
 };

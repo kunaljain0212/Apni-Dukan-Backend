@@ -1,6 +1,12 @@
-import { Order } from '../models/order';
+import { Request, Response, NextFunction } from 'express';
+import { ISchemaType } from 'server/interfaces/ExtendedMogooseSchemaType';
+import { IRequest } from 'server/interfaces/ExtendedRequest';
+import { IOrder } from 'server/interfaces/OrderModel';
+import { OrderSchemas } from '../models/order';
 
-export const getOrderById = (req, res, next, id) => {
+const { Order } = OrderSchemas;
+
+export const getOrderById = (req: IRequest, res: Response, next: NextFunction, id: string): any => {
   Order.findById(id)
     .populate('products.product', 'name price')
     .exec((err, order) => {
@@ -10,11 +16,11 @@ export const getOrderById = (req, res, next, id) => {
         });
       }
       req.order = order;
-      next();
+      return next();
     });
 };
 
-export const createOrder = (req, res) => {
+export const createOrder = (req: IRequest, res: Response): any => {
   req.body.order.user = req.profile;
   const order = new Order(req.body.order);
   order.save((err, orderData) => {
@@ -27,7 +33,7 @@ export const createOrder = (req, res) => {
   });
 };
 
-export const getAllOrders = (req, res) => {
+export const getAllOrders = (req: Request, res: Response): any => {
   Order.find()
     .populate('user', 'name _id')
     .exec((err, orders) => {
@@ -40,20 +46,21 @@ export const getAllOrders = (req, res) => {
     });
 };
 
-export const getOrderStatus = (req, res) =>
-  res.json(Order.schema.path('status').enumValues);
+export const getOrderStatus = (req: Request, res: Response): any =>
+  res.json((Order.schema.path('status') as ISchemaType).enumValues);
 
-export const updateOrderStatus = (req, res) => {
+export const updateOrderStatus = (req: Request, res: Response): any => {
   Order.updateOne(
     { _id: req.body.orderId },
     { $set: { status: req.body.status } },
-    (err, data) => {
-      if (err) {
+    { new: true },
+    (error: any, updatedOrder: IOrder) => {
+      if (error) {
         return res.status(400).json({
           err: 'Failed to update status in DB',
         });
       }
-      return res.json(data);
+      return res.json(updatedOrder);
     }
   );
 };

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
+import { IProduct } from 'server/interfaces/ProductModel';
 
-const { ObjectId } = mongoose.Schema;
-const productSchema = new mongoose.Schema(
+const productSchema = new mongoose.Schema<IProduct>(
   {
     name: {
       type: String,
@@ -22,7 +22,7 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
     category: {
-      type: ObjectId,
+      type: 'ObjectId',
       ref: 'Category',
       required: true,
     },
@@ -43,4 +43,4 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Product', productSchema);
+export default mongoose.model<IProduct>('Product', productSchema);

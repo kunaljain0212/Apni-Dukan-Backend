@@ -1,19 +1,24 @@
+import { Response, NextFunction } from 'express';
 import User from '../models/user';
-import Order from '../models/order';
+import { OrderSchemas } from '../models/order';
+import { IRequest } from 'server/interfaces/ExtendedRequest';
+import { Purchases, PurchasesArray } from 'server/interfaces/ProductModel';
 
-export const getUserById = (req, res, next, id) => {
+const { Order } = OrderSchemas;
+
+export const getUserById = (req: IRequest, res: Response, next: NextFunction, id: string): any => {
   User.findById(id).exec((error, user) => {
     if (error || !user) {
-      res.status(400).json({
+      return res.status(400).json({
         error: 'USER NOT FOUND',
       });
     }
     req.profile = user;
-    next();
+    return next();
   });
 };
 
-export const getUser = (req, res) => {
+export const getUser = (req: IRequest, res: Response): any => {
   // TODO password needs to be hiddden
   req.profile.encry_password = undefined;
   req.profile.salt = undefined;
@@ -22,42 +27,42 @@ export const getUser = (req, res) => {
   res.json(req.profile);
 };
 
-export const updateUser = (req, res) => {
+export const updateUser = (req: IRequest, res: Response): any => {
   User.findByIdAndUpdate(
     { _id: req.profile._id },
     { $set: req.body },
-    { new: true, useFindAndModify: false },
+    {
+      new: true,
+      useFindAndModify: false,
+      fields: { encry_password: 0, salt: 0, createdAt: 0, updatedAt: 0 },
+    },
     (error, user) => {
       if (error) {
-        res.status(400).json({
+        return res.status(400).json({
           error: 'You are not authorized to update this information',
         });
       }
-      user.encry_password = undefined;
-      user.salt = undefined;
-      user.createdAt = undefined;
-      user.updatedAt = undefined;
-      res.json(user);
+      return res.json(user);
     }
   );
 };
 
-export const userPurchaseList = (req, res) => {
+export const userPurchaseList = (req: IRequest, res: Response): any => {
   Order.find({ user: req.profile._id })
     .populate('user', '_id name')
     .exec((error, order) => {
       if (error) {
-        res.status(404).json({
+        return res.status(404).json({
           error: 'NO ORDER IN THIS ACCOUNT',
         });
       }
-      res.json(order);
+      return res.json(order);
     });
 };
 
-export const pushOrderInPurchaseList = (req, res, next) => {
-  const purchases = [];
-  req.body.order.products.forEach((product) => {
+export const pushOrderInPurchaseList = (req: IRequest, res: Response, next: NextFunction): any => {
+  const purchases: PurchasesArray = [];
+  req.body.order.products.forEach((product: Purchases) => {
     purchases.push({
       _id: product._id,
       name: product.name,
@@ -74,14 +79,13 @@ export const pushOrderInPurchaseList = (req, res, next) => {
     { _id: req.profile._id },
     { $push: { purchases } },
     { new: true },
-    // eslint-disable-next-line no-unused-vars
-    (error, _) => {
+    (error, _result) => {
       if (error) {
         return res.status(400).json({
-          erroror: 'Unable to save purchase list',
+          error: 'Unable to save purchase list',
         });
       }
-      next();
+      return next();
     }
   );
 };

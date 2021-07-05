@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
+import { ICategory } from 'server/interfaces/CategoryModel';
 
-const categorySchema = new mongoose.Schema(
+const categorySchema = new mongoose.Schema<ICategory>(
   {
     name: {
       type: String,
@@ -13,4 +14,4 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Category', categorySchema);
+export default mongoose.model<ICategory>('Category', categorySchema);
