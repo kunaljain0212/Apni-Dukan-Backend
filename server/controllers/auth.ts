@@ -92,6 +92,7 @@ export const signout = (req: Request, res: Response): any => {
 export const isSignedin = expressJwt({
   secret: process.env.SECRET || '',
   userProperty: 'auth',
+  algorithms: ['HS256'],
 });
 
 // custom middlewares

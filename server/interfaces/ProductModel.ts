@@ -2,10 +2,7 @@ import { Document, PopulatedDoc } from 'mongoose';
 import { ICategory } from './CategoryModel';
 
 interface Photo {
-  data: {
-    $binary: string;
-    $type: string;
-  };
+  data: any;
   contentType: string;
 }
 
