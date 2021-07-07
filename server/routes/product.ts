@@ -5,7 +5,6 @@ import {
   getProduct,
   updateProduct,
   deleteProduct,
-  photo,
   getAllProducts,
   getAllUniqueCategories,
 } from '../controllers/product';
@@ -23,9 +22,6 @@ router.post('/product/create/:userId', isSignedin, isAuthenticated, isAdmin, cre
 
 // Get product routes
 router.get('/product/:productId', getProduct);
-
-// for optimisation
-router.get('/product/photo/:productId', photo);
 
 // Update product route
 router.put('/product/:productId/:userId', updateProduct);
