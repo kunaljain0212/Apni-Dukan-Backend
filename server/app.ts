@@ -1,8 +1,10 @@
 import './config/env';
-import mongoose from 'mongoose';
 import express from 'express';
+import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/user';
 import categoryRoutes from './routes/category';
@@ -10,6 +12,13 @@ import productRoutes from './routes/product';
 import paymentRoutes from './routes/payment';
 
 export const app = express();
+
+// Middlewares
+app.use(compression());
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors());
+app.use(helmet());
 
 // DB connection
 const URI: string | undefined =
@@ -27,11 +36,6 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
-
-// Middlewares
-app.use(express.json());
-app.use(cookieParser());
-app.use(cors());
 
 // My Routes
 app.get('/', (req, res) => {

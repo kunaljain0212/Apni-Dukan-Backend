@@ -1,7 +1,7 @@
 /* eslint-disable eqeqeq */
 import { Request, Response, NextFunction } from 'express';
 import formidable from 'formidable';
-import fs from 'fs';
+import cloudinary from 'cloudinary';
 import { IRequest } from 'server/interfaces/ExtendedRequest';
 import { IProduct } from 'server/interfaces/ProductModel';
 import Product from '../models/product';
@@ -28,6 +28,11 @@ export const getProductById = (
 export const createProduct = (req: Request, res: Response): any => {
   const form = new formidable.IncomingForm();
 
+  (cloudinary as any).config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_SECRET,
+  });
   // eslint-disable-next-line consistent-return
   form.parse(req, (error, fields, file) => {
     if (error) {
@@ -43,45 +48,52 @@ export const createProduct = (req: Request, res: Response): any => {
         error: 'Fields can not be empty',
       });
     }
-
-    const product = new Product(fields);
     if (file.photo as formidable.File) {
       if ((file.photo as formidable.File).size > 3000000) {
         return res.status(400).json({
           error: 'File size too big!',
         });
       }
-      product.photo.data = fs.readFileSync((file.photo as formidable.File).path);
-      product.photo.contentType = (file.photo as formidable.File).type as string;
-    }
+      cloudinary.v2.uploader.upload(
+        (file.photo as formidable.File).path,
+        { quality: '40' },
+        // eslint-disable-next-line consistent-return
+        (cloudError, result) => {
+          if (cloudError) {
+            return res.status(400).json({
+              error: 'Product not saved in DB',
+            });
+          }
+          // eslint-disable-next-line no-param-reassign
+          fields.photo = result?.secure_url as string;
+          const product = new Product(fields);
 
-    product.save((saveError, savedProduct) => {
-      if (saveError) {
-        return res.status(400).json({
-          error: 'Product not saved in DB',
-        });
-      }
-      return res.json(savedProduct);
-    });
+          product.save((saveError, savedProduct) => {
+            if (saveError) {
+              return res.status(400).json({
+                error: 'Product not saved in DB',
+              });
+            }
+            return res.json(savedProduct);
+          });
+        }
+      );
+    }
   });
 };
 
 export const getProduct = (req: IRequest, res: Response): any => {
-  req.product.photo = undefined;
   return res.json(req.product);
-};
-
-export const photo = (req: IRequest, res: Response, next: NextFunction): any => {
-  if (req.product.photo.data) {
-    res.set('Content-Type', req.product.photo.contentType);
-    return res.send(req.product.photo.data);
-  }
-  return next();
 };
 
 export const updateProduct = (req: IRequest, res: Response): any => {
   const form = new formidable.IncomingForm();
 
+  (cloudinary as any).config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_SECRET,
+  });
   // eslint-disable-next-line consistent-return
   form.parse(req, (error, fields, file) => {
     if (error) {
@@ -93,24 +105,35 @@ export const updateProduct = (req: IRequest, res: Response): any => {
     let { product } = req;
     product = Object.assign(product, fields);
 
-    if (file.photo) {
+    if (file.photo as formidable.File) {
       if ((file.photo as formidable.File).size > 3000000) {
         return res.status(400).json({
           error: 'File size too big!',
         });
       }
-      product.photo.data = fs.readFileSync((file.photo as formidable.File).path);
-      product.photo.contentType = (file.photo as formidable.File).type;
+      cloudinary.v2.uploader.upload(
+        (file.photo as formidable.File).path,
+        { quality: '40' },
+        // eslint-disable-next-line consistent-return
+        (cloudError, result) => {
+          if (cloudError) {
+            return res.status(400).json({
+              error: 'Product not saved in DB',
+            });
+          }
+          // eslint-disable-next-line no-param-reassign
+          product.photo = result?.secure_url as string;
+          product.save((saveError: any, savedProduct: IProduct) => {
+            if (saveError) {
+              return res.status(400).json({
+                error: 'Updation failed in DB',
+              });
+            }
+            return res.json(savedProduct);
+          });
+        }
+      );
     }
-
-    product.save((saveError: any, savedProduct: IProduct) => {
-      if (saveError) {
-        return res.status(400).json({
-          error: 'Updation failed in DB',
-        });
-      }
-      return res.json(savedProduct);
-    });
   });
 };
 
@@ -133,7 +156,6 @@ export const getAllProducts = (req: IRequest, res: Response): any => {
   const sortBy = req.query.sortBy ? req.query.sortBy : '_id';
 
   Product.find()
-    .select('-photo')
     .populate('category')
     .sort([[sortBy, 'asc']])
     .limit(limit)

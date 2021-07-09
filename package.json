@@ -16,6 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cloudinary": "^1.26.2",
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
     "dotenv": "^8.6.0",
@@ -23,6 +25,7 @@
     "express-jwt": "5.3.1",
     "express-validator": "^6.11.1",
     "formidable": "^1.2.1",
+    "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.12",
     "razorpay": "^2.0.6",
@@ -30,6 +33,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.19",
+    "@types/compression": "^1.7.1",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.10",
     "@types/dotenv": "^8.2.0",
