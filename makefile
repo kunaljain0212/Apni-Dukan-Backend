@@ -1,13 +1,13 @@
 up:
-	docker-compose -f docker-compose.yaml up -d
+	docker-compose -f docker-compose.yml up -d
 start:
-	docker-compose -f docker-compose.yaml start
+	docker-compose -f docker-compose.yml start
 down:
-	docker-compose -f docker-compose.yaml down
+	docker-compose -f docker-compose.yml down
 # restart:
-# 	docker-compose -f docker-compose.yaml stop
-#     docker-compose -f docker-compose.yaml up -d
+# 	docker-compose -f docker-compose.yml stop
+#     docker-compose -f docker-compose.yml up -d
 # logs:
-#     docker-compose -f docker-compose.yaml logs --tail=100 -f
+#     docker-compose -f docker-compose.yml logs --tail=100 -f
 # ps:
-#     docker-compose -f docker-compose.yaml ps
+#     docker-compose -f docker-compose.yml ps
