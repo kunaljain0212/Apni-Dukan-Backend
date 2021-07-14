@@ -6,23 +6,21 @@ import { IRequest } from 'server/interfaces/ExtendedRequest';
 import { IProduct } from 'server/interfaces/ProductModel';
 import Product from '../models/product';
 
-export const getProductById = (
+export const getProductById = async (
   req: IRequest,
   res: Response,
   next: NextFunction,
   id: string
-): any => {
-  Product.findById(id)
-    .populate('category')
-    .exec((error, product) => {
-      if (error) {
-        return res.status(400).json({
-          error: 'Product not found in DB',
-        });
-      }
-      req.product = product;
-      return next();
+): Promise<any> => {
+  try {
+    const product = await Product.findById(id).populate('category');
+    req.product = product;
+    return next();
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Product not found in DB',
     });
+  }
 };
 
 export const createProduct = (req: Request, res: Response): any => {
@@ -137,41 +135,35 @@ export const updateProduct = (req: IRequest, res: Response): any => {
   });
 };
 
-export const deleteProduct = (req: IRequest, res: Response): any => {
-  const { product } = req;
-  product.remove((error: any, deletedProduct: IProduct) => {
-    if (error) {
-      return res.status(400).json({
-        error: 'Product not deleted from DB',
-      });
-    }
+export const deleteProduct = async (req: IRequest, res: Response): Promise<any> => {
+  try {
+    const { product } = req;
+    const deletedProduct = await product.remove();
     return res.json({
       message: `${deletedProduct.name} deleted from DB`,
     });
-  });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Product not deleted from DB',
+    });
+  }
 };
 
-export const getAllProducts = (req: IRequest, res: Response): any => {
-  const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 8;
-  const sortBy = req.query.sortBy ? req.query.sortBy : '_id';
-
-  Product.find()
-    .populate('category')
-    .sort([[sortBy, 'asc']])
-    .limit(limit)
-    .exec((error, products) => {
-      if (error) {
-        return res.status(400).json({
-          error: 'Error connecting to DB',
-        });
-      }
-      if (products.length === 0) {
-        return res.status(400).json({
-          error: 'No products found',
-        });
-      }
-      return res.json(products);
-    });
+export const getAllProducts = async (req: IRequest, res: Response): Promise<any> => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 8;
+    const sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+    const products = await Product.find()
+      .populate('category')
+      .sort([[sortBy, 'asc']])
+      .limit(limit);
+    if (products.length === 0) {
+      throw new Error('No products found');
+    }
+    return res.json(products);
+  } catch (error) {
+    return res.status(400).json(error);
+  }
 };
 
 export const updateInventory = (req: IRequest, res: Response, next: NextFunction): any => {
@@ -192,13 +184,13 @@ export const updateInventory = (req: IRequest, res: Response, next: NextFunction
   });
 };
 
-export const getAllUniqueCategories = (_req: Request, res: Response): any => {
-  Product.distinct('category', {}, (erroror, category) => {
-    if (erroror) {
-      return res.status(400).json({
-        erroror: 'No category found for product',
-      });
-    }
+export const getAllUniqueCategories = async (_req: Request, res: Response): Promise<any> => {
+  try {
+    const category = await Product.distinct('category', {});
     return res.json(category);
-  });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'No category found for product',
+    });
+  }
 };

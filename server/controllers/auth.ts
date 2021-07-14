@@ -7,28 +7,27 @@ import { IRequest } from 'server/interfaces/ExtendedRequest';
 import { IUser } from 'server/interfaces/UserModel';
 
 // eslint-disable-next-line consistent-return
-export const signup = (req: Request, res: Response): any => {
+export const signup = async (req: Request, res: Response): Promise<any> => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({
       error: errors.array()[0].msg,
     });
   }
-
-  const user = new User(req.body);
-  user.save((err, savedUser) => {
-    if (err) {
-      return res.status(400).json({
-        error:
-          'NOT able to save the user in database. Potential reason could be - Email already exists',
-      });
-    }
+  try {
+    const user = new User(req.body);
+    const savedUser = await user.save();
     return res.json({
       name: savedUser.name,
       email: savedUser.email,
       id: savedUser._id,
     });
-  });
+  } catch (error) {
+    return res.status(400).json({
+      error:
+        'NOT able to save the user in database. Potential reason could be - Email already exists',
+    });
+  }
 };
 
 // eslint-disable-next-line consistent-return
@@ -78,7 +77,7 @@ export const signin = (req: Request, res: Response): any => {
   });
 };
 
-export const signout = (req: Request, res: Response): any => {
+export const signout = async (req: Request, res: Response): Promise<any> => {
   res.clearCookie('token');
   return res.json({
     message: 'User signed out successfully',
