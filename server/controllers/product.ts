@@ -23,116 +23,121 @@ export const getProductById = async (
   }
 };
 
-export const createProduct = (req: Request, res: Response): any => {
-  const form = new formidable.IncomingForm();
-
-  (cloudinary as any).config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API_KEY,
-    api_secret: process.env.CLOUD_SECRET,
-  });
-  // eslint-disable-next-line consistent-return
-  form.parse(req, (error, fields, file) => {
-    if (error) {
-      return res.status(400).json({
-        error: 'Problem creating product!',
-      });
-    }
-
-    const { name, description, price, stock, category } = fields;
-
-    if (!name || !description || !price || !stock || !category) {
-      return res.status(400).json({
-        error: 'Fields can not be empty',
-      });
-    }
-    if (file.photo as formidable.File) {
-      if ((file.photo as formidable.File).size > 3000000) {
-        return res.status(400).json({
-          error: 'File size too big!',
-        });
+// eslint-disable-next-line consistent-return
+export const createProduct = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const form = new formidable.IncomingForm();
+    (cloudinary as any).config({
+      cloud_name: process.env.CLOUD_NAME,
+      api_key: process.env.CLOUD_API_KEY,
+      api_secret: process.env.CLOUD_SECRET,
+    });
+    form.parse(req, (error, fields, file) => {
+      if (error) {
+        throw {
+          statusCode: 400,
+          message: 'Problem creating product!',
+        };
       }
-      cloudinary.v2.uploader.upload(
-        (file.photo as formidable.File).path,
-        { quality: '40' },
-        // eslint-disable-next-line consistent-return
-        (cloudError, result) => {
-          if (cloudError) {
-            return res.status(400).json({
-              error: 'Product not saved in DB',
-            });
-          }
-          // eslint-disable-next-line no-param-reassign
-          fields.photo = result?.secure_url as string;
-          const product = new Product(fields);
 
-          product.save((saveError, savedProduct) => {
-            if (saveError) {
-              return res.status(400).json({
-                error: 'Product not saved in DB',
-              });
-            }
-            return res.json(savedProduct);
-          });
+      const { name, description, price, stock, category } = fields;
+
+      if (!name || !description || !price || !stock || !category) {
+        throw {
+          statusCode: 400,
+          message: 'Fields can not be empty!',
+        };
+      }
+      if (file.photo as formidable.File) {
+        if ((file.photo as formidable.File).size > 3000000) {
+          throw {
+            statusCode: 400,
+            message: 'File size too big!',
+          };
         }
-      );
+        cloudinary.v2.uploader.upload(
+          (file.photo as formidable.File).path,
+          { quality: '40' },
+          async (cloudError, result) => {
+            if (cloudError) {
+              throw {
+                statusCode: 400,
+                message: 'Product not saved in DB!',
+              };
+            }
+            // eslint-disable-next-line no-param-reassign
+            fields.photo = result?.secure_url as string;
+            const product = new Product(fields);
+            const savedProduct = await product.save();
+            return res.json(savedProduct);
+          }
+        );
+      }
+    });
+  } catch (error: any) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({ error: error.message });
     }
-  });
+    return res.status(400).json({ error: 'Database error occured' });
+  }
 };
 
 export const getProduct = (req: IRequest, res: Response): any => {
   return res.json(req.product);
 };
 
-export const updateProduct = (req: IRequest, res: Response): any => {
-  const form = new formidable.IncomingForm();
+// eslint-disable-next-line consistent-return
+export const updateProduct = async (req: IRequest, res: Response): Promise<any> => {
+  try {
+    const form = new formidable.IncomingForm();
 
-  (cloudinary as any).config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API_KEY,
-    api_secret: process.env.CLOUD_SECRET,
-  });
-  // eslint-disable-next-line consistent-return
-  form.parse(req, (error, fields, file) => {
-    if (error) {
-      return res.status(400).json({
-        error: 'Problem updating product!',
-      });
-    }
-
-    let { product } = req;
-    product = Object.assign(product, fields);
-
-    if (file.photo as formidable.File) {
-      if ((file.photo as formidable.File).size > 3000000) {
-        return res.status(400).json({
-          error: 'File size too big!',
-        });
+    (cloudinary as any).config({
+      cloud_name: process.env.CLOUD_NAME,
+      api_key: process.env.CLOUD_API_KEY,
+      api_secret: process.env.CLOUD_SECRET,
+    });
+    form.parse(req, (error, fields, file) => {
+      if (error) {
+        throw {
+          statusCode: 400,
+          message: 'Problem updating product!',
+        };
       }
-      cloudinary.v2.uploader.upload(
-        (file.photo as formidable.File).path,
-        { quality: '40' },
-        // eslint-disable-next-line consistent-return
-        (cloudError, result) => {
-          if (cloudError) {
-            return res.status(400).json({
-              error: 'Product not saved in DB',
-            });
-          }
-          // eslint-disable-next-line no-param-reassign
-          product.photo = result?.secure_url as string;
-          product.save((saveError: any, savedProduct: IProduct) => {
-            if (saveError) {
-              return res.status(400).json({
-                error: 'Updation failed in DB',
-              });
-            }
-            return res.json(savedProduct);
-          });
+
+      let { product } = req;
+      product = Object.assign(product, fields);
+
+      if (file.photo as formidable.File) {
+        if ((file.photo as formidable.File).size > 3000000) {
+          throw {
+            statusCode: 400,
+            message: 'File size too big!',
+          };
         }
-      );
+        cloudinary.v2.uploader.upload(
+          (file.photo as formidable.File).path,
+          { quality: '40' },
+          async (cloudError, result) => {
+            if (cloudError) {
+              throw {
+                statusCode: 400,
+                message: 'Product not saved in DB!',
+              };
+            }
+            // eslint-disable-next-line no-param-reassign
+            product.photo = result?.secure_url as string;
+            const savedProduct = await product.save();
+            return res.json(savedProduct);
+          }
+        );
+      }
+    });
+  } catch (error: any) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({ error: error.message });
     }
-  });
+    return res.status(400).json({ error: 'Database error occured' });
+  }
 };
 
 export const deleteProduct = async (req: IRequest, res: Response): Promise<any> => {
@@ -166,22 +171,25 @@ export const getAllProducts = async (req: IRequest, res: Response): Promise<any>
   }
 };
 
-export const updateInventory = (req: IRequest, res: Response, next: NextFunction): any => {
-  const myOperations = req.body.order.products.map((prod: any) => ({
-    updateOne: {
-      filter: { _id: prod._id },
-      update: { $inc: { stock: -prod.count, sold: +prod.count } },
-    },
-  }));
-
-  Product.bulkWrite(myOperations, {}, (error, _updatedInventory) => {
-    if (error) {
-      return res.status(400).json({
-        error: 'Inventory updation failed',
-      });
-    }
+export const updateInventory = async (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    const myOperations = req.body.order.products.map((prod: any) => ({
+      updateOne: {
+        filter: { _id: prod._id },
+        update: { $inc: { stock: -prod.count, sold: +prod.count } },
+      },
+    }));
+    Product.bulkWrite(myOperations, {});
     return next();
-  });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Inventory updation failed',
+    });
+  }
 };
 
 export const getAllUniqueCategories = async (_req: Request, res: Response): Promise<any> => {

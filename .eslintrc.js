@@ -25,6 +25,7 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'import/no-unresolved': 'error',
     'no-underscore-dangle': 'off',
+    'no-throw-literal': 'off',
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     'no-console': 'off',
