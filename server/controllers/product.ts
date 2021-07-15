@@ -6,199 +6,199 @@ import { IRequest } from 'server/interfaces/ExtendedRequest';
 import { IProduct } from 'server/interfaces/ProductModel';
 import Product from '../models/product';
 
-export const getProductById = (
+export const getProductById = async (
   req: IRequest,
   res: Response,
   next: NextFunction,
   id: string
-): any => {
-  Product.findById(id)
-    .populate('category')
-    .exec((error, product) => {
-      if (error) {
-        return res.status(400).json({
-          error: 'Product not found in DB',
-        });
-      }
-      req.product = product;
-      return next();
+): Promise<any> => {
+  try {
+    const product = await Product.findById(id).populate('category');
+    req.product = product;
+    return next();
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Product not found in DB',
     });
+  }
 };
 
-export const createProduct = (req: Request, res: Response): any => {
-  const form = new formidable.IncomingForm();
-
-  (cloudinary as any).config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API_KEY,
-    api_secret: process.env.CLOUD_SECRET,
-  });
-  // eslint-disable-next-line consistent-return
-  form.parse(req, (error, fields, file) => {
-    if (error) {
-      return res.status(400).json({
-        error: 'Problem creating product!',
-      });
-    }
-
-    const { name, description, price, stock, category } = fields;
-
-    if (!name || !description || !price || !stock || !category) {
-      return res.status(400).json({
-        error: 'Fields can not be empty',
-      });
-    }
-    if (file.photo as formidable.File) {
-      if ((file.photo as formidable.File).size > 3000000) {
-        return res.status(400).json({
-          error: 'File size too big!',
-        });
+// eslint-disable-next-line consistent-return
+export const createProduct = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const form = new formidable.IncomingForm();
+    (cloudinary as any).config({
+      cloud_name: process.env.CLOUD_NAME,
+      api_key: process.env.CLOUD_API_KEY,
+      api_secret: process.env.CLOUD_SECRET,
+    });
+    form.parse(req, (error, fields, file) => {
+      if (error) {
+        throw {
+          statusCode: 400,
+          message: 'Problem creating product!',
+        };
       }
-      cloudinary.v2.uploader.upload(
-        (file.photo as formidable.File).path,
-        { quality: '40' },
-        // eslint-disable-next-line consistent-return
-        (cloudError, result) => {
-          if (cloudError) {
-            return res.status(400).json({
-              error: 'Product not saved in DB',
-            });
-          }
-          // eslint-disable-next-line no-param-reassign
-          fields.photo = result?.secure_url as string;
-          const product = new Product(fields);
 
-          product.save((saveError, savedProduct) => {
-            if (saveError) {
-              return res.status(400).json({
-                error: 'Product not saved in DB',
-              });
-            }
-            return res.json(savedProduct);
-          });
+      const { name, description, price, stock, category } = fields;
+
+      if (!name || !description || !price || !stock || !category) {
+        throw {
+          statusCode: 400,
+          message: 'Fields can not be empty!',
+        };
+      }
+      if (file.photo as formidable.File) {
+        if ((file.photo as formidable.File).size > 3000000) {
+          throw {
+            statusCode: 400,
+            message: 'File size too big!',
+          };
         }
-      );
+        cloudinary.v2.uploader.upload(
+          (file.photo as formidable.File).path,
+          { quality: '40' },
+          async (cloudError, result) => {
+            if (cloudError) {
+              throw {
+                statusCode: 400,
+                message: 'Product not saved in DB!',
+              };
+            }
+            // eslint-disable-next-line no-param-reassign
+            fields.photo = result?.secure_url as string;
+            const product = new Product(fields);
+            const savedProduct = await product.save();
+            return res.json(savedProduct);
+          }
+        );
+      }
+    });
+  } catch (error: any) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({ error: error.message });
     }
-  });
+    return res.status(400).json({ error: 'Database error occured' });
+  }
 };
 
 export const getProduct = (req: IRequest, res: Response): any => {
   return res.json(req.product);
 };
 
-export const updateProduct = (req: IRequest, res: Response): any => {
-  const form = new formidable.IncomingForm();
+// eslint-disable-next-line consistent-return
+export const updateProduct = async (req: IRequest, res: Response): Promise<any> => {
+  try {
+    const form = new formidable.IncomingForm();
 
-  (cloudinary as any).config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API_KEY,
-    api_secret: process.env.CLOUD_SECRET,
-  });
-  // eslint-disable-next-line consistent-return
-  form.parse(req, (error, fields, file) => {
-    if (error) {
-      return res.status(400).json({
-        error: 'Problem updating product!',
-      });
-    }
-
-    let { product } = req;
-    product = Object.assign(product, fields);
-
-    if (file.photo as formidable.File) {
-      if ((file.photo as formidable.File).size > 3000000) {
-        return res.status(400).json({
-          error: 'File size too big!',
-        });
+    (cloudinary as any).config({
+      cloud_name: process.env.CLOUD_NAME,
+      api_key: process.env.CLOUD_API_KEY,
+      api_secret: process.env.CLOUD_SECRET,
+    });
+    form.parse(req, (error, fields, file) => {
+      if (error) {
+        throw {
+          statusCode: 400,
+          message: 'Problem updating product!',
+        };
       }
-      cloudinary.v2.uploader.upload(
-        (file.photo as formidable.File).path,
-        { quality: '40' },
-        // eslint-disable-next-line consistent-return
-        (cloudError, result) => {
-          if (cloudError) {
-            return res.status(400).json({
-              error: 'Product not saved in DB',
-            });
-          }
-          // eslint-disable-next-line no-param-reassign
-          product.photo = result?.secure_url as string;
-          product.save((saveError: any, savedProduct: IProduct) => {
-            if (saveError) {
-              return res.status(400).json({
-                error: 'Updation failed in DB',
-              });
-            }
-            return res.json(savedProduct);
-          });
+
+      let { product } = req;
+      product = Object.assign(product, fields);
+
+      if (file.photo as formidable.File) {
+        if ((file.photo as formidable.File).size > 3000000) {
+          throw {
+            statusCode: 400,
+            message: 'File size too big!',
+          };
         }
-      );
+        cloudinary.v2.uploader.upload(
+          (file.photo as formidable.File).path,
+          { quality: '40' },
+          async (cloudError, result) => {
+            if (cloudError) {
+              throw {
+                statusCode: 400,
+                message: 'Product not saved in DB!',
+              };
+            }
+            // eslint-disable-next-line no-param-reassign
+            product.photo = result?.secure_url as string;
+            const savedProduct = await product.save();
+            return res.json(savedProduct);
+          }
+        );
+      }
+    });
+  } catch (error: any) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({ error: error.message });
     }
-  });
+    return res.status(400).json({ error: 'Database error occured' });
+  }
 };
 
-export const deleteProduct = (req: IRequest, res: Response): any => {
-  const { product } = req;
-  product.remove((error: any, deletedProduct: IProduct) => {
-    if (error) {
-      return res.status(400).json({
-        error: 'Product not deleted from DB',
-      });
-    }
+export const deleteProduct = async (req: IRequest, res: Response): Promise<any> => {
+  try {
+    const { product } = req;
+    const deletedProduct = await product.remove();
     return res.json({
       message: `${deletedProduct.name} deleted from DB`,
     });
-  });
-};
-
-export const getAllProducts = (req: IRequest, res: Response): any => {
-  const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 8;
-  const sortBy = req.query.sortBy ? req.query.sortBy : '_id';
-
-  Product.find()
-    .populate('category')
-    .sort([[sortBy, 'asc']])
-    .limit(limit)
-    .exec((error, products) => {
-      if (error) {
-        return res.status(400).json({
-          error: 'Error connecting to DB',
-        });
-      }
-      if (products.length === 0) {
-        return res.status(400).json({
-          error: 'No products found',
-        });
-      }
-      return res.json(products);
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Product not deleted from DB',
     });
+  }
 };
 
-export const updateInventory = (req: IRequest, res: Response, next: NextFunction): any => {
-  const myOperations = req.body.order.products.map((prod: any) => ({
-    updateOne: {
-      filter: { _id: prod._id },
-      update: { $inc: { stock: -prod.count, sold: +prod.count } },
-    },
-  }));
-
-  Product.bulkWrite(myOperations, {}, (error, _updatedInventory) => {
-    if (error) {
-      return res.status(400).json({
-        error: 'Inventory updation failed',
-      });
+export const getAllProducts = async (req: IRequest, res: Response): Promise<any> => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 8;
+    const sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+    const products = await Product.find()
+      .populate('category')
+      .sort([[sortBy, 'asc']])
+      .limit(limit);
+    if (products.length === 0) {
+      throw new Error('No products found');
     }
+    return res.json(products);
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+export const updateInventory = async (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    const myOperations = req.body.order.products.map((prod: any) => ({
+      updateOne: {
+        filter: { _id: prod._id },
+        update: { $inc: { stock: -prod.count, sold: +prod.count } },
+      },
+    }));
+    Product.bulkWrite(myOperations, {});
     return next();
-  });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Inventory updation failed',
+    });
+  }
 };
 
-export const getAllUniqueCategories = (_req: Request, res: Response): any => {
-  Product.distinct('category', {}, (erroror, category) => {
-    if (erroror) {
-      return res.status(400).json({
-        erroror: 'No category found for product',
-      });
-    }
+export const getAllUniqueCategories = async (_req: Request, res: Response): Promise<any> => {
+  try {
+    const category = await Product.distinct('category', {});
     return res.json(category);
-  });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'No category found for product',
+    });
+  }
 };
