@@ -1,7 +1,7 @@
 <div align="center">
 
 # Apni Dukan Backend
-
+   
 [![GitHub issues](https://img.shields.io/github/issues/kunaljain0212/Apni-Dukan-Backend?style=for-the-badge)](https://github.com/kunaljain0212/Apni-Dukan-Backend/issues) [![GitHub forks](https://img.shields.io/github/forks/kunaljain0212/Apni-Dukan-Backend?style=for-the-badge)](https://github.com/kunaljain0212/Apni-Dukan-Backend/network) [![GitHub stars](https://img.shields.io/github/stars/kunaljain0212/Apni-Dukan-Backend?style=for-the-badge)](https://github.com/kunaljain0212/Apni-Dukan-Backend/stargazers) [![GitHub license](https://img.shields.io/github/license/kunaljain0212/Apni-Dukan-Backend?style=for-the-badge)](https://github.com/kunaljain0212/Apni-Dukan-Backend/blob/master/LICENSE)
 
 <img src="./public/images/1.png">
@@ -15,7 +15,7 @@ The application also has Dark Mode :relieved:
 
 # Features Implemented
 
-## 1. Frontend
+## 1. Frontend ([Frontend Repository](https://github.com/kunaljain0212/Apni-Dukan-Frontend))
 
 1. Home page for users to see all products.
 2. Carts page to view and manage products added to the cart and to process payment.
