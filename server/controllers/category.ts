@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { ICategory } from 'server/interfaces/CategoryModel';
 import { IRequest } from 'server/interfaces/ExtendedRequest';
 import Category from '../models/category';
 

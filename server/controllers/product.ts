@@ -3,7 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 import formidable from 'formidable';
 import cloudinary from 'cloudinary';
 import { IRequest } from 'server/interfaces/ExtendedRequest';
-import { IProduct } from 'server/interfaces/ProductModel';
 import Product from '../models/product';
 
 export const getProductById = async (
