@@ -82,7 +82,7 @@ export const signin = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-export const signout = async (req: Request, res: Response): Promise<any> => {
+export const signout = async (_: Request, res: Response): Promise<any> => {
   res.clearCookie('token');
   return res.json({
     message: 'User signed out successfully',

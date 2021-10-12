@@ -191,7 +191,7 @@ export const updateInventory = async (
   }
 };
 
-export const getAllUniqueCategories = async (_req: Request, res: Response): Promise<any> => {
+export const getAllUniqueCategories = async (_: Request, res: Response): Promise<any> => {
   try {
     const category = await Product.distinct('category', {});
     return res.json(category);
