@@ -8,7 +8,7 @@
     "start": "node ./dist/server/app.js",
     "build": "tsc -p tsconfig.prod.json",
     "test": "run-script-os",
-    "test:darwin:linux": "NODE_ENV=test && env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts' --timeout 15000 --exit",
+    "test:linux": "NODE_ENV=test && env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts' --timeout 15000 --exit",
     "test:win32": "SET NODE_ENV=test && env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts' --timeout 15000 --exit",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
