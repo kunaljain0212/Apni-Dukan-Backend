@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ISchemaType } from 'server/interfaces/ExtendedMogooseSchemaType';
 import { IRequest } from 'server/interfaces/ExtendedRequest';
-import { IOrder } from 'server/interfaces/OrderModel';
 import { OrderSchemas } from '../models/order';
 
 const { Order } = OrderSchemas;
