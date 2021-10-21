@@ -131,7 +131,7 @@ Clone the frontend and backend repositories, cd into them individually, and then
 
 `npm i -g common-js win-node-env`
 
-9. If you want to use Razorpay payments gateway as well generate your KEY_ID and KEY_SECRET using [this link](https://razorpay.com/docs/payment-gateway/dashboard-guide/settings/api-keys/) else you can random strings for KEY_ID and KEY_SECRET and then substitute it in the .env file.
+9. If you want to use Razorpay payments gateway as well generate your KEY_ID and KEY_SECRET using [this link](https://razorpay.com/docs/payment-gateway/dashboard-guide/settings/api-keys/) else you can use random strings for KEY_ID and KEY_SECRET and then substitute it in the .env file.
 10. Now you can run `npm start` and start working localy.
 
 ### Note:
