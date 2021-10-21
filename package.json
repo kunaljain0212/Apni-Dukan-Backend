@@ -7,7 +7,9 @@
     "dev": "nodemon",
     "start": "node ./dist/server/app.js",
     "build": "tsc -p tsconfig.prod.json",
-    "test": "NODE_ENV=test && env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts' --timeout 10000 --exit",
+    "test": "run-script-os",
+    "test:linux": "NODE_ENV=test && env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts' --timeout 15000 --exit",
+    "test:win32": "SET NODE_ENV=test && env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts' --timeout 15000 --exit",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prepare": "husky install"
@@ -29,6 +31,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.12",
     "razorpay": "^2.0.6",
+    "run-script-os": "^1.1.6",
     "uuid": "^3.3.3"
   },
   "devDependencies": {

@@ -127,8 +127,12 @@ Clone the frontend and backend repositories, cd into them individually, and then
 5. Create a .env file same as the given env file (.example.env).
 6. Create a local MongoDB database using mongo shell or you can use hosted MongoDB database as well using MongoDB Atlas. Once any one of them is setup you can substitute their URI in the .env file.
 7. Add a secret value to .env file.
-8. If you want to use Razorpay payments gateway as well generate your KEY_ID and KEY_SECRET using [this link](https://razorpay.com/docs/payment-gateway/dashboard-guide/settings/api-keys/) and then substitute it in the .env file.
-9. Now you can run `npm start` and start working localy.
+8. For windows users, additional packages need to be installed [common-js](https://www.npmjs.com/package/common-js) and [win-node-env](https://www.npmjs.com/package/win-node-env) globally
+
+`npm i -g common-js win-node-env`
+
+9. If you want to use Razorpay payments gateway as well generate your KEY_ID and KEY_SECRET using [this link](https://razorpay.com/docs/payment-gateway/dashboard-guide/settings/api-keys/) else you can use random strings for KEY_ID and KEY_SECRET and then substitute it in the .env file.
+10. Now you can run `npm start` and start working localy.
 
 ### Note:
 
