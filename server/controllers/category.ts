@@ -37,7 +37,7 @@ export const createCategory = async (req: Request, res: Response): Promise<any> 
 export const getCategory = (req: IRequest, res: Response): any => res.json(req.category);
 
 // Get all categories
-export const getAllCategories = async (req: Request, res: Response): Promise<any> => {
+export const getAllCategories = async (_: Request, res: Response): Promise<any> => {
   try {
     const categories = await Category.find();
     return res.json(categories);
