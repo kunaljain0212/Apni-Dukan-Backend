@@ -35,7 +35,7 @@ export const createOrder = async (req: IRequest, res: Response): Promise<any> =>
   }
 };
 
-export const getAllOrders = async (req: Request, res: Response): Promise<any> => {
+export const getAllOrders = async (_: Request, res: Response): Promise<any> => {
   try {
     const orders = await Order.find().populate('user', 'name _id');
     return res.json(orders);
@@ -46,7 +46,7 @@ export const getAllOrders = async (req: Request, res: Response): Promise<any> =>
   }
 };
 
-export const getOrderStatus = (req: Request, res: Response): any =>
+export const getOrderStatus = (_: Request, res: Response): any =>
   res.json((Order.schema.path('status') as ISchemaType).enumValues);
 
 export const updateOrderStatus = async (req: Request, res: Response): Promise<any> => {

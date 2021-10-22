@@ -11,7 +11,7 @@ export default async (): Promise<any> => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log('Connect to DB!');
+    console.log('Connected to DB!');
   } catch (error) {
     console.log('Error connecting to DB: ', error);
   }
