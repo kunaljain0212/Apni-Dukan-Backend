@@ -24,7 +24,7 @@ app.use(helmet());
 mongo();
 
 // My Routes
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.status(200).json({
     message: `Server is up and running on port ${process.env.PORT || 8000}`,
   });
