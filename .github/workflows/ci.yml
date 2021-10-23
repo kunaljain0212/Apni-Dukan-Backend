@@ -12,12 +12,12 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: apni-dukaan-backend
-#     env: # Or as an environment variable
-#       DATABASE: ${{ secrets.DATABASE }}
-#       SECRET: ${{ secrets.SECRET }}
-#       KEY_ID: ${{ secrets.KEY_ID }}
-#       PAYMENT_SECRET: ${{ secrets.PAYMENT_SECRET }}
-#       KEY_SECRET: ${{ secrets.KEY_SECRET }}
+    env: # Or as an environment variable
+      DATABASE: ${{ secrets.DATABASE }}
+      SECRET: ${{ secrets.SECRET }}
+      KEY_ID: ${{ secrets.KEY_ID }}
+      PAYMENT_SECRET: ${{ secrets.PAYMENT_SECRET }}
+      KEY_SECRET: ${{ secrets.KEY_SECRET }}
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js
