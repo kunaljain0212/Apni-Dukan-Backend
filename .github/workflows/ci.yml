@@ -3,6 +3,8 @@
 name: Test and Lint
 
 on:
+  push:
+    branches: [ master ]
   pull_request_target:
     branches: [ master ]
     types: [labeled]
@@ -12,8 +14,7 @@ jobs:
 
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'safe to test')
-    environment: apni-dukaan-backend
-    env: # Or as an environment variable
+    env:
       DATABASE: ${{ secrets.DATABASE }}
       SECRET: ${{ secrets.SECRET }}
       KEY_ID: ${{ secrets.KEY_ID }}
