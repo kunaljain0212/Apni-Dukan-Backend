@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
+import jwt from 'jsonwebtoken';
 import expressJwt from 'express-jwt';
+import User from '../models/user';
 import { IRequest } from 'server/interfaces/ExtendedRequest';
-import UsersService from '../services/AuthService';
 
 // eslint-disable-next-line consistent-return
 export const signup = async (req: Request, res: Response): Promise<any> => {
@@ -13,16 +14,12 @@ export const signup = async (req: Request, res: Response): Promise<any> => {
     });
   }
   try {
-    const { name, email, id } = await UsersService.signup(
-      req.body.name,
-      req.body.lastName,
-      req.body.email,
-      req.body.password
-    );
+    const user = new User(req.body);
+    const savedUser = await user.save();
     return res.json({
-      name,
-      email,
-      id,
+      name: savedUser.name,
+      email: savedUser.email,
+      id: savedUser._id,
     });
   } catch (error) {
     return res.status(400).json({
@@ -43,15 +40,33 @@ export const signin = async (req: Request, res: Response): Promise<any> => {
         message: errors.array()[0].msg,
       };
     }
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      throw {
+        statusCode: 400,
+        message: 'USER not found!',
+      };
+    }
 
-    const { token, _id, name, email, role } = await UsersService.login(
-      req.body.email,
-      req.body.password
+    if (!user.authenticate(req.body.password)) {
+      throw {
+        statusCode: 401,
+        message: 'CREDENTIALS DO NOT MATCH!',
+      };
+    }
+
+    // TOKEN CREATED
+    const token = jwt.sign(
+      {
+        _id: user._id,
+      },
+      process.env.SECRET || ''
     );
 
     // PUTTING TOKEN INSIDE BROWSER OF USER
     res.cookie('token', token, { expires: new Date() });
 
+    const { _id, name, email, role } = user;
     return res.json({
       token,
       _id,
@@ -67,7 +82,7 @@ export const signin = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-export const signout = async (_: Request, res: Response): Promise<any> => {
+export const signout = async (req: Request, res: Response): Promise<any> => {
   res.clearCookie('token');
   return res.json({
     message: 'User signed out successfully',
