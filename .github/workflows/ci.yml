@@ -1,0 +1,25 @@
+name: Test and Lint
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  test-lint:
+
+    runs-on: ubuntu-latest
+    env:
+      DATABASE: ${{ secrets.DATABASE }}
+      SECRET: ${{ secrets.SECRET }}
+      KEY_ID: ${{ secrets.KEY_ID }}
+      PAYMENT_SECRET: ${{ secrets.PAYMENT_SECRET }}
+      KEY_SECRET: ${{ secrets.KEY_SECRET }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14.x'
+    - run: npm ci
+    - run: npm run test:linux
+    - run: npm run lint:fix
