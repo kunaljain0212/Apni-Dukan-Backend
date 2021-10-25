@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { IRequest } from 'server/interfaces/ExtendedRequest';
 import Category from '../models/category';
-
+import CategoryService from '../services/CategoryService';
 // param routes
 export const getCategoryById = async (
   req: IRequest,
@@ -23,9 +23,8 @@ export const getCategoryById = async (
 // Create Route
 export const createCategory = async (req: Request, res: Response): Promise<any> => {
   try {
-    const category = new Category(req.body);
-    const savedCategory = await category.save();
-    return res.status(200).json({ category: savedCategory });
+    const category = await CategoryService.createCategory(req.body);
+    return res.status(200).json({ category });
   } catch (error) {
     return res.status(400).json({
       error: 'NOT able to save category',
@@ -39,7 +38,7 @@ export const getCategory = (req: IRequest, res: Response): any => res.json(req.c
 // Get all categories
 export const getAllCategories = async (_: Request, res: Response): Promise<any> => {
   try {
-    const categories = await Category.find();
+    const categories = await CategoryService.getAllCategories();
     return res.json(categories);
   } catch (error) {
     return res.status(400).json({
@@ -51,10 +50,8 @@ export const getAllCategories = async (_: Request, res: Response): Promise<any> 
 // Update category route
 export const updateCategory = async (req: IRequest, res: Response): Promise<any> => {
   try {
-    const { category } = req;
-    category.name = req.body.name;
-    const updatedCategory = await category.save();
-    return res.json(updatedCategory);
+    const category = await CategoryService.updateCategory(req);
+    return res.json(category);
   } catch (error) {
     return res.status(400).json({
       err: 'FAILED TO UPDATE CATEGORY',
@@ -65,10 +62,9 @@ export const updateCategory = async (req: IRequest, res: Response): Promise<any>
 // Delete category route
 export const removeCategory = async (req: IRequest, res: Response): Promise<any> => {
   try {
-    const { category } = req;
-    const removedCategory = await category.remove();
+    const category = await CategoryService.removeCategory(req);
     return res.json({
-      message: `${removedCategory.name} SUCCESSFULLY DELETED`,
+      message: `${category.name} SUCCESSFULLY DELETED`,
     });
   } catch (error) {
     return res.status(400).json({
