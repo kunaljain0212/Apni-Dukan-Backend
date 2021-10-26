@@ -1,5 +1,6 @@
 import { IRequest } from 'server/interfaces/ExtendedRequest';
 import Category from '../models/category';
+import { ICategory } from '../interfaces/CategoryModel';
 
 class CategoryService {
   /**
@@ -7,16 +8,16 @@ class CategoryService {
    * @param category category object
    * @returns category
    */
-  async createCategory(category: object): Promise<object> {
-    return await Category.create(category);
+  createCategory(category: ICategory): Promise<any> {
+    return Category.create(category);
   }
 
   /**
    * function to return all categories
    * @returns All categories
    */
-  async getAllCategories(): Promise<object> {
-    return await Category.find();
+  getAllCategories(): Promise<any> {
+    return Promise.resolve(Category.find());
   }
 
   /**
@@ -24,10 +25,10 @@ class CategoryService {
    * @param req req body
    * @returns updated category
    */
-  async updateCategory(req: IRequest) {
+  updateCategory(req: IRequest) {
     const { category } = req;
     category.name = req.body.name;
-    return await category.save();
+    return category.save();
   }
 
   /**
@@ -35,9 +36,9 @@ class CategoryService {
    * @param req req body
    * @returns removed category
    */
-  async removeCategory(req: IRequest) {
+  removeCategory(req: IRequest) {
     const { category } = req;
-    return await category.remove();
+    return category.remove();
   }
 }
 export default new CategoryService();
