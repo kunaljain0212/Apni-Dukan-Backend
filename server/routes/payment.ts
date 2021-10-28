@@ -2,7 +2,8 @@ import express from 'express';
 import uuid from 'uuid';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
-import { isSignedin, isAuthenticated } from '../controllers/auth';
+import { isAuthenticated } from '../middlewares/authMiddleware';
+import { isSignedin } from '../controllers/auth';
 import { getUserById } from '../controllers/user';
 
 const router = express.Router();

@@ -8,7 +8,9 @@ import {
   getAllProducts,
   getAllUniqueCategories,
 } from '../controllers/product';
-import { isSignedin, isAuthenticated, isAdmin } from '../controllers/auth';
+import { isAdmin, isAuthenticated } from '../middlewares/authMiddleware';
+
+import { isSignedin } from '../controllers/auth';
 import { getUserById } from '../controllers/user';
 
 const router = express.Router();
