@@ -1,5 +1,5 @@
-import User from '../models/user';
 import jwt from 'jsonwebtoken';
+import User from '../models/user';
 
 class UsersService {
   /**
@@ -11,12 +11,8 @@ class UsersService {
    * @returns name, email, id
    */
   async signup(name: string, lastName: string, email: string, password: string) {
-    try {
-      const user = await User.create({ name, lastName, email, password });
-      return { name: user.name, email: user.email, id: user._id };
-    } catch (error) {
-      throw error;
-    }
+    const user = await User.create({ name, lastName, email, password });
+    return { name: user.name, email: user.email, id: user._id };
   }
 
   /**
@@ -26,33 +22,29 @@ class UsersService {
    * @returns token, id, name, email and role
    */
   async login(email: string, password: string) {
-    try {
-      const user = await User.findOne({ email });
-      if (!user) {
-        throw {
-          statusCode: 400,
-          message: 'USER not found!',
-        };
-      }
-
-      if (!user.authenticate(password)) {
-        throw {
-          statusCode: 401,
-          message: 'CREDENTIALS DO NOT MATCH!',
-        };
-      }
-
-      const token = jwt.sign(
-        {
-          _id: user._id,
-        },
-        process.env.SECRET || ''
-      );
-
-      return { token, _id: user._id, name: user.name, email: user.email, role: user.role };
-    } catch (error) {
-      throw error;
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw {
+        statusCode: 400,
+        message: 'USER not found!',
+      };
     }
+
+    if (!user.authenticate(password)) {
+      throw {
+        statusCode: 401,
+        message: 'CREDENTIALS DO NOT MATCH!',
+      };
+    }
+
+    const token = jwt.sign(
+      {
+        _id: user._id,
+      },
+      process.env.SECRET || ''
+    );
+
+    return { token, _id: user._id, name: user.name, email: user.email, role: user.role };
   }
 }
 
