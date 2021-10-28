@@ -1,5 +1,7 @@
 import express from 'express';
-import { isSignedin, isAuthenticated, isAdmin } from '../controllers/auth';
+import { isAdmin, isAuthenticated } from '../middlewares/authMiddleware';
+
+import { isSignedin } from '../controllers/auth';
 import { getUserById, pushOrderInPurchaseList } from '../controllers/user';
 import { updateInventory } from '../controllers/product';
 import {
