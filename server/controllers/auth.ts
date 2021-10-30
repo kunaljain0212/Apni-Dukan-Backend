@@ -1,7 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import expressJwt from 'express-jwt';
-import { IRequest } from 'server/interfaces/ExtendedRequest';
 import UsersService from '../services/AuthService';
 
 import { google } from 'googleapis';
