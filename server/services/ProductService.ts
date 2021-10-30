@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import cloudinary from 'cloudinary';
+import cloudinary from '../config/cloudinary';
 import formidable from 'formidable';
 import { IRequest } from 'server/interfaces/ExtendedRequest';
 import Product from '../models/product';
@@ -11,11 +11,7 @@ class ProductsService {
 
   async createProduct(req: Request): Promise<any> {
     const form = new formidable.IncomingForm();
-    (cloudinary as any).config({
-      cloud_name: process.env.CLOUD_NAME,
-      api_key: process.env.CLOUD_API_KEY,
-      api_secret: process.env.CLOUD_SECRET,
-    });
+
     form.parse(req, (error, fields, file) => {
       if (error) {
         throw {
@@ -62,11 +58,6 @@ class ProductsService {
   async updateProduct(req: IRequest) {
     const form = new formidable.IncomingForm();
 
-    (cloudinary as any).config({
-      cloud_name: process.env.CLOUD_NAME,
-      api_key: process.env.CLOUD_API_KEY,
-      api_secret: process.env.CLOUD_SECRET,
-    });
     form.parse(req, (error, fields, file) => {
       if (error) {
         throw {
