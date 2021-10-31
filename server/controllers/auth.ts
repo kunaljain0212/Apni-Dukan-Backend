@@ -109,6 +109,33 @@ export const signout = async (_: Request, res: Response): Promise<any> => {
   });
 };
 
+export const forgotPassword = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { email } = req.body;
+    await UsersService.forgotPassword(email);
+    res.status(200).json({ message: 'Password reset mail was sent successfully' });
+  } catch (error: any) {
+    return res.status(error.status).json({
+      err: error.message,
+    });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response): Promise<any> => {
+  try {
+    let { email, otp, newPassword, confirmPassword } = req.body;
+
+    if (newPassword !== confirmPassword) {
+      res.status(400).json({ message: 'Password does not match!' });
+    }
+    await UsersService.resetPassword(email, otp, newPassword);
+    res.status(200).json({ message: 'Password Reset Successful!' });
+  } catch (error: any) {
+    return res.status(error.status).json({
+      err: error.message,
+    });
+  }
+};
 // protected routes
 export const isSignedin = expressJwt({
   secret: process.env.SECRET || '',

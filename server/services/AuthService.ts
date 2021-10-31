@@ -1,5 +1,8 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
+import otpModel from '../models/otp';
+import { otpGenerator } from '../utils/otpGenerator';
+import MailerService from './MailerService';
 
 class UsersService {
   /**
@@ -99,6 +102,75 @@ class UsersService {
       }
     } catch (error: any) {
       throw { statusCode: 400, error: error.message };
+    }
+  }
+
+  /**
+   * Function which stores otp of user and send email
+   * @param email email id of user
+   */
+  async forgotPassword(email: string) {
+    try {
+      const user = await User.findOne({ email });
+      if (!user) throw { status: 400, message: 'User not found' };
+
+      const otpFind = await otpModel.findById(email);
+
+      if (otpFind) {
+        const currentTime: any = new Date();
+        if (currentTime - otpFind.updatedAt < 300000) {
+          // less than 5 minutes = 300000 milliseconds
+          throw { status: 400, message: 'Please Request after 5 minutes' };
+        }
+
+        if (otpFind.counter >= 3) {
+          throw { status: 400, message: 'Maximum OTP request limit reached. Try after 1 hour' };
+        }
+      }
+      const otp = otpGenerator();
+
+      const promises = [];
+
+      promises.push(
+        otpModel.updateOne({ _id: email }, { otp }, { upsert: true, setDefaultsOnInsert: true })
+      );
+      promises.push(MailerService.sendPasswordResetEmail(user.email, user.name, otp));
+      await Promise.all(promises);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * Reset password of user after verifying otp
+   * @param email email id of the user
+   * @param otp otp
+   * @param password password of the user
+   */
+  async resetPassword(email: string, otp: number, password: string) {
+    try {
+      const user = await User.findOne({ email });
+      if (!user) throw { status: 400, message: 'User not found' };
+
+      const otpFind = await otpModel.findById(email);
+
+      if (!otpFind) throw { status: 400, message: 'Please request for a new OTP first' };
+
+      if (otpFind.otp !== otp) throw { status: 400, message: 'Invalid OTP' };
+
+      const promises = [];
+      promises.push(
+        User.findOneAndUpdate(
+          { email },
+          {
+            password,
+          }
+        )
+      );
+      promises.push(otpModel.findOneAndDelete({ email }));
+      await Promise.all(promises);
+    } catch (err) {
+      throw err;
     }
   }
 }
